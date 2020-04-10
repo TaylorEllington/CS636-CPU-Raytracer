@@ -11,21 +11,11 @@ before_script:
   - gem install bundler
   - bundle install
 
-test:
-  stage: test
-  script:
-    - cd 
-    - bundle exec jekyll build -s class-site -d public
-  artifacts:
-    paths:
-      - public
-  except:
-    - master
 
 pages:
   stage: deploy
   script:
-    - bundle exec jekyll build -d public
+    - bundle exec jekyll build -s class-site -d public
   artifacts:
     paths:
       - public
