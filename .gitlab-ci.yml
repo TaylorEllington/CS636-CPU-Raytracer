@@ -15,7 +15,7 @@ test:
   stage: test
   script:
     - cd 
-    - bundle exec jekyll build -d public -s  class-site
+    - bundle exec jekyll build -s class-site -d public
   artifacts:
     paths:
       - public
