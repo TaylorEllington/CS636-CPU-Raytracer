@@ -1,9 +1,31 @@
 # This file is a template, and might need editing before it works on your project.
-# Full project: https://gitlab.com/pages/plain-html
+# Template project: https://gitlab.com/pages/jekyll
+# Docs: https://docs.gitlab.com/ce/pages/
+image: ruby:2.6
+
+variables:
+  JEKYLL_ENV: production
+  LC_ALL: C.UTF-8
+
+before_script:
+  - gem install bundler
+  - bundle install
+
+test:
+  stage: test
+  script:
+    - cd 
+    - bundle exec jekyll build -d public -s  class-site
+  artifacts:
+    paths:
+      - public
+  except:
+    - master
+
 pages:
   stage: deploy
   script:
-    - cp -r public-site public
+    - bundle exec jekyll build -d public
   artifacts:
     paths:
       - public
