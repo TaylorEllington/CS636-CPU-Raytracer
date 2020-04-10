@@ -1,5 +1,5 @@
 name: Solar Theme
-url: http://taylorellington.gitlab.io/cs636-advanced-rendering-techniques/
+url: http://taylorellington.gitlab.io/cs636-advanced-rendering-techniques
 description: A stylish blog using the Solarized color palette
 
 permalink: /:year/:month/:day/:title/
