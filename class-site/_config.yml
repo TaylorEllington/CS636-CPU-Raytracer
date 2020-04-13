@@ -1,7 +1,7 @@
 name: CS636 Advanced Rendering Techniques
 url: http://taylorellington.gitlab.io
 baseurl: /cs636-advanced-rendering-techniques
-description: Coursework and homework from CS636
+description: Coursework from CS636
 
 permalink: /:year/:month/:day/:title/
 paginate: 10
