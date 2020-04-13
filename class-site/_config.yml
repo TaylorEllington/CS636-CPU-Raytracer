@@ -5,6 +5,7 @@ description: Coursework and homework from CS636
 
 permalink: /:year/:month/:day/:title/
 paginate: 10
+future: true
 
 gems: [jekyll-paginate]
 exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'Rakefile']
