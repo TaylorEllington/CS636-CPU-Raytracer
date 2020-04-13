@@ -6,6 +6,8 @@ title: Archives
 <div id="blog-archives">
 
 	{% for post in site.posts %}
+
+	{% if post.visible == "true" %}
 		<article class="post">
 			{% if post.external-url %}
 				<h1>
@@ -16,6 +18,7 @@ title: Archives
 				<h1><a href="{{site.baseurl}}{{ post.url }}">{{ post.title }}</a></h1>
 			{% endif %}
 		</article>
+		{%endif%}
 	{% endfor %}
 
 </div>
