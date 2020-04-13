@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Basic Ray Tracer with Spheres and Triangle Meshes"
-date:   2020-05-24 00:00:00 -0800
+date:   2020-04-19 00:00:00 -0800
 categories: ray-tracing 
 ---
 
