@@ -7,9 +7,7 @@ visible: 1
 ---
 
 {% highlight c %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
+void main(int argc, char argv**){
+    std::cout << "hello, blog" << std::endl;
+}
 {% endhighlight %}

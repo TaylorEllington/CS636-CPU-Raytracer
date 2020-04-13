@@ -33,7 +33,7 @@ table {
 /*** Basics ***/
 body {
 	font-family: Verdana, serif;
-	font-size: 13px;
+	font-size: 16px;
 	line-height: 1.7;
 }
 
@@ -57,7 +57,7 @@ sup { vertical-align: super; font-size: 0.85em; }
 sub { vertical-align: sub; font-size: 0.85em; }
 
 code {
-    font: 0.85em Monaco, Courier, Monospace;
+    font: 1.0em Monaco, Courier, Monospace;
 }
 
 blockquote {
