@@ -7,8 +7,10 @@ title: Solar Theme
 
 	<article class="post">
 
+	{% if post.visible== 1 %}
+
 		{% if post.external-url %}
-			{% if post.visible == "true" %}
+
 			<h1>
 				<a href="{{ post.external-url }}">{{ post.title }}</a>
 				<a class="anchor" href="{{site.baseurl}}{{ post.url }}"><i class="icon-anchor"></i></a>
@@ -18,9 +20,9 @@ title: Solar Theme
 		{% endif %}
 
 		<div class="post-content">{{ post.content }}</div>
+	{%endif%}
 
 	</article>
-	{%endif%}
 
 {% endfor %}
 

@@ -7,7 +7,7 @@ title: Archives
 
 	{% for post in site.posts %}
 
-	{% if post.visible == "true" %}
+	{% if post.visible== 1 %}
 		<article class="post">
 			{% if post.external-url %}
 				<h1>
@@ -19,6 +19,7 @@ title: Archives
 			{% endif %}
 		</article>
 		{%endif%}
+		
 	{% endfor %}
 
 </div>
