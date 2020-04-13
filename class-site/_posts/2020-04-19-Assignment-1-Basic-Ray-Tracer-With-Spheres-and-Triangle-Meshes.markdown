@@ -6,6 +6,8 @@ categories: ray-tracing
 visible: 1
 ---
 
+This is placeholder text for troubleshooting css
+
 {% highlight c %}
 void main(int argc, char argv**){
     std::cout << "hello, blog" << std::endl;
