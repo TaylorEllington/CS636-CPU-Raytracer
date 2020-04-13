@@ -1,28 +1,26 @@
 ---
 layout: default
-title: Solar Theme
+title: Raytracer
 ---
 
 {% for post in paginator.posts %}
 
+{% if post.visible== 1 %}
 	<article class="post">
 
-	{% if post.visible== 1 %}
-
-		{% if post.external-url %}
-
-			<h1>
-				<a href="{{ post.external-url }}">{{ post.title }}</a>
-				<a class="anchor" href="{{site.baseurl}}{{ post.url }}"><i class="icon-anchor"></i></a>
-			</h1>
-		{% else %}
-			<h1><a href="{{site.baseurl}}{{ post.url }}">{{ post.title }}</a></h1>
-		{% endif %}
+	{% if post.external-url %}
+		<h1>
+			<a href="{{ post.external-url }}">{{ post.title }}</a>
+			<a class="anchor" href="{{site.baseurl}}{{ post.url }}"><i class="icon-anchor"></i></a>
+		</h1>
+	{% else %}
+		<h1><a href="{{site.baseurl}}{{ post.url }}">{{ post.title }}</a></h1>
+	{% endif %}
 
 		<div class="post-content">{{ post.content }}</div>
-	{%endif%}
 
 	</article>
+	{%endif%}
 
 {% endfor %}
 
