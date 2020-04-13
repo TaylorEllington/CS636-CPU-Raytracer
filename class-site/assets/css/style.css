@@ -226,7 +226,7 @@ img.center {
 @media all and (max-width: 870px) {
 
 	#page, #header, #content, #footer {
-		width: inherit;
+		width: 500;
 		padding-left: 10px;
 		padding-right: 10px;
 	}
@@ -243,6 +243,10 @@ img.center {
 		display: block;
 		margin-bottom: 15px;
 	}
+
+	code {
+    font: 0.7em Monaco, Courier, Monospace;
+}
 
 }
 
