@@ -4,10 +4,14 @@ Artifacts from CS636 Advanced Rendering Techniques taken Spring 2020 at Drexel U
 
 # Repository Contents:
 
-3rd-party: contains external libraries used by the c++ homework code
-assets: holds any meshes, images, textures, etc used by the raytracer
-class-site: a ruby powered static site displayed on this repository's associated gitlab pages, don't bother with this if you are looking into the raytracer
-src: the c++ raytracer you are probably looking for.
+*3rd-party/* contains external libraries used by the c++ homework code  
+*assets/* holds any meshes, images, textures, etc used by the raytracer  
+*class-site/* a ruby powered static site displayed on this repository's associated gitlab pages, don't bother with this if you are looking into the raytracer  
+*src* the c++ raytracer you are probably looking for    
+CMakeLists.txt - the top level file that runs this projects build system  
+gemfile - needed for Jekyll to build the class site  
+gemfile.lock - more ruby weirdness for the class site  
+README.md - this file   
 
 # Setting up
 
@@ -27,6 +31,9 @@ That should get you going by generating a project targeted towards whatever is t
 
 
 # Features
+
+This list will expand with time as we add more to the project, these are correlated by the assignment that needed them. 
+
 ## Homework 1
 Camera -> image plane  
 Generating rays with image plane  
