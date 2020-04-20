@@ -10,7 +10,7 @@ This is placeholder text for troubleshooting css
 
 ![My helpful screenshot](/images/hw1/oops.png)
 
-{% highlight %}
+{% highlight text %}
 Screen - Setting up image as 512 by 512 with debug mode on
 Raytracer - Performing inital setup with:
         Camera at vec4(0.000000, 0.000000, 6.000000, 1.000000)
