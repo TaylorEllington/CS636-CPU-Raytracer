@@ -8,8 +8,21 @@ visible: 1
 
 This is placeholder text for troubleshooting css
 
-{% highlight c %}
-void main(int argc, char argv**){
-    std::cout << "hello, blog" << std::endl;
-}
+![My helpful screenshot](/images/hw1/oops.png)
+
+{% highlight %}
+Screen - Setting up image as 512 by 512 with debug mode on
+Raytracer - Performing inital setup with:
+        Camera at vec4(0.000000, 0.000000, 6.000000, 1.000000)
+        Camera Space - X:vec3(1.000000, -0.000000, 0.000000)
+        Camera Space - Y:vec3(0.000000, 1.000000, 0.000000)
+        Camera Space - Z:vec3(0.000000, 0.000000, -1.000000)
+
+        View Plane center at: vec3(0.000000, 0.000000, 5.000000)
+        View Plane upper left at: vec3(-1.000000, 1.000000, 5.000000)
+
+starting raytrace of scene......
+Raytracer - tracing took 1452ms
+Screen - Writing 262144 pixels to 512 by 512 file: traced_image.png
+
 {% endhighlight %}

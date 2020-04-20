@@ -4,6 +4,3 @@
 [submodule "3rd-party/json"]
 	path = 3rd-party/json
 	url = https://github.com/nlohmann/json.git
-[submodule "3rd-party/CLI11"]
-	path = 3rd-party/CLI11
-	url = https://github.com/CLIUtils/CLI11.git
