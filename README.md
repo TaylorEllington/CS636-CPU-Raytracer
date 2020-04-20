@@ -4,10 +4,10 @@ Artifacts from CS636 Advanced Rendering Techniques taken Spring 2020 at Drexel U
 
 # Repository Contents:
 
-*3rd-party/* contains external libraries used by the c++ homework code  
-*assets/* holds any meshes, images, textures, etc used by the raytracer  
-*class-site/* a ruby powered static site displayed on this repository's associated gitlab pages, don't bother with this if you are looking into the raytracer  
-*src* the c++ raytracer you are probably looking for    
+**3rd-party/** contains external libraries used by the c++ homework code  
+**assets/** holds any meshes, images, textures, etc used by the raytracer  
+**class-site/** a ruby powered static site displayed on this repository's associated gitlab pages, don't bother with this if you are looking into the raytracer  
+**src/** the c++ raytracer you are probably looking for    
 CMakeLists.txt - the top level file that runs this projects build system  
 gemfile - needed for Jekyll to build the class site  
 gemfile.lock - more ruby weirdness for the class site  
