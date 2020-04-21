@@ -5,7 +5,7 @@ date:   2020-04-19 00:00:00 -0800
 categories: ray-tracing 
 visible: 1
 ---
-The assignment did not require any specific references to the code-base to appear in the readme document. Should you like to look at the code in more depth, it is available [here in my gitlab](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques).
+The assignment did not require any specific references to the code-base to appear in the README document. Should you like to look at the code in more depth, it is available [here in my gitlab](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques).
 
 That gitlab also holds the code for this website, the C++ is in the `src/` directory.
 
@@ -30,11 +30,11 @@ starting raytrace of scene......
 Raytracer - tracing took 1452ms
 Screen - Writing 262144 pixels to 512 by 512 file: traced_image.png
 
-{% endhighlight %}
-
+{% endhighlight %}  
+  
 ![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/teapot.png)
 
-This teapot and sphere is in teh same resolution and took 64542ms
+This teapot and sphere is in the same resolution as the previous image and took 64542ms  
 
 {% highlight text %}
 Screen - Setting up image as 512 by 512 with debug mode on
@@ -50,8 +50,8 @@ Raytracer - Performing inital setup with:
 starting raytrace of scene......
 Raytracer - tracing took 64542ms
 Screen - Writing 262144 pixels to 512 by 512 file: teapot.png
-{% endhighlight %}
-
+{% endhighlight %}  
+  
 
 ![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/penny3.png)
 
@@ -71,8 +71,8 @@ Raytracer - Performing inital setup with:
 starting raytrace of scene......
 Raytracer - tracing took 83251ms
 Screen - Writing 262144 pixels to 512 by 512 file: penny3.png
-{% endhighlight %}
-
+{% endhighlight %}  
+  
 Here are some of the other images I generated along the way.
 
 ![Diagonal](/cs636-advanced-rendering-techniques/images/hw_1/diag.png)
