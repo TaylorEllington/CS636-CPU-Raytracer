@@ -5,9 +5,15 @@ date:   2020-04-19 00:00:00 -0800
 categories: ray-tracing 
 visible: 1
 ---
+### Required images
+
 The assignment did not require any specific references to the code-base to appear in the README document. Should you like to look at the code in more depth, it is available [here in my gitlab](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques).
 
 That gitlab also holds the code for this website, the C++ is in the `src/` directory.
+ 
+#### Supertoroid and Spheres
+
+This image is intended to match the requirements of a mesh and spheres as stated in the assignment. 
 
 ![Final RayTraced image - HW1](/cs636-advanced-rendering-techniques/images/hw_1/traced_image.png)
 
@@ -31,7 +37,8 @@ Raytracer - tracing took 1452ms
 Screen - Writing 262144 pixels to 512 by 512 file: traced_image.png
 
 {% endhighlight %}  
-  
+
+#### Teapot
 ![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/teapot.png)
 
 This teapot and sphere is in the same resolution as the previous image and took 64542ms  
@@ -52,8 +59,8 @@ Raytracer - tracing took 64542ms
 Screen - Writing 262144 pixels to 512 by 512 file: teapot.png
 {% endhighlight %}  
   
-
-![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/penny3.png)
+#### ....A blob?
+![penny](/cs636-advanced-rendering-techniques/images/hw_1/penny3.png)
 
 This is the model listed as "molecule" on the website and penny3.smf in the file description. Same resolution as above, 83251ms.
 
@@ -72,7 +79,9 @@ starting raytrace of scene......
 Raytracer - tracing took 83251ms
 Screen - Writing 262144 pixels to 512 by 512 file: penny3.png
 {% endhighlight %}  
-  
+
+
+### Additional images from the development process  
 Here are some of the other images I generated along the way.
 
 ![Diagonal](/cs636-advanced-rendering-techniques/images/hw_1/diag.png)
