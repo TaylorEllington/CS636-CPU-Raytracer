@@ -32,6 +32,46 @@ Screen - Writing 262144 pixels to 512 by 512 file: traced_image.png
 
 {% endhighlight %}
 
+![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/teapot.png)
+
+This teapot and sphere is in teh same resolution and took 64542ms
+
+{% highlight text %}
+Screen - Setting up image as 512 by 512 with debug mode on
+Raytracer - Performing inital setup with:
+        Camera at vec4(0.000000, 0.000000, 6.000000, 1.000000)
+        Camera Space - X:vec3(1.000000, -0.000000, 0.000000)
+        Camera Space - Y:vec3(0.000000, 1.000000, 0.000000)
+        Camera Space - Z:vec3(0.000000, 0.000000, -1.000000)
+
+        View Plane center at: vec3(0.000000, 0.000000, 5.000000)
+        View Plane upper left at: vec3(-1.000000, 1.000000, 5.000000)
+
+starting raytrace of scene......
+Raytracer - tracing took 64542ms
+Screen - Writing 262144 pixels to 512 by 512 file: teapot.png
+{% endhighlight %}
+
+
+![Teapot - HW1](/cs636-advanced-rendering-techniques/images/hw_1/penny3.png)
+
+This is the model listed as "molecule" on the website and penny3.smf in the file description. Same resolution as above, 83251ms.
+
+{% highlight text %}
+Screen - Setting up image as 512 by 512 with debug mode on
+Raytracer - Performing inital setup with:
+        Camera at vec4(0.000000, 0.000000, 6.000000, 1.000000)
+        Camera Space - X:vec3(1.000000, -0.000000, 0.000000)
+        Camera Space - Y:vec3(0.000000, 1.000000, 0.000000)
+        Camera Space - Z:vec3(0.000000, 0.000000, -1.000000)
+
+        View Plane center at: vec3(0.000000, 0.000000, 5.000000)
+        View Plane upper left at: vec3(-1.000000, 1.000000, 5.000000)
+
+starting raytrace of scene......
+Raytracer - tracing took 83251ms
+Screen - Writing 262144 pixels to 512 by 512 file: penny3.png
+{% endhighlight %}
 
 Here are some of the other images I generated along the way.
 

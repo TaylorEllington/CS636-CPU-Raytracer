@@ -13,7 +13,7 @@ void main(int argc, char** argv) {
     init.mWindowWidth = 512;
     init.mWindowHeight = 512;
     init.mWindowDebugMode = true;  // this gives us the purple background
-    init.mOutputFileName = "traced_image.png";
+    init.mOutputFileName = "penny3.png";
 
     init.camera.mPosition = { 0.0, 0.0, 6.0, 1.0 };
     init.camera.mViewDirection = glm::vec4(0,0,0, 1) - init.camera.mPosition;
@@ -23,33 +23,51 @@ void main(int argc, char** argv) {
     init.camera.mHorizontalViewAngle = 56.0;
 
     MeshDesc desc;
-    desc.filename = "assets/supertoroid.smf";
+    desc.filename = "assets/penny3.smf";
     desc.position = { 0.0, 0.0, 0.0, 1.0 };
-    desc.rotate = { 0,0,45 };
-    desc.scale = { 1,1,1 };
-
-    PrimitiveDesc pDesc0;
-    pDesc0.position = { -3, 0.0, 0.0, 1.0 };
-    pDesc0.radius = 0.5;
-
-    PrimitiveDesc pDesc1;
-    pDesc1.position = { 3, 0.0, 0.0, 1.0 };
-    pDesc1.radius = 0.5;
-
-    PrimitiveDesc pDesc2;
-    pDesc2.position = { 0.0, -3.0, 0.0, 1.0 };
-    pDesc2.radius = 0.5;
-
-    PrimitiveDesc pDesc3;
-    pDesc3.position = { 0.0, 3.0, 0.0, 1.0 };
-    pDesc3.radius = 0.5;
+    desc.rotate = { 0,90,0 };
+    desc.scale = { 0.2,0.2,0.2 };
 
     init.meshSceneObjects.push_back(desc);
 
-    init.primitiveSceneObjects.push_back(pDesc0);
-    init.primitiveSceneObjects.push_back(pDesc1);
-    init.primitiveSceneObjects.push_back(pDesc2);
-    init.primitiveSceneObjects.push_back(pDesc3);
+     PrimitiveDesc pDesc0;
+     pDesc0.position = { 4, 6, 0.0, 1.0 };
+     pDesc0.radius = 0.5;
+     //init.primitiveSceneObjects.push_back(pDesc0);
+
+
+
+
+
+    // Supertoroid scene
+    // MeshDesc desc;
+    // desc.filename = "assets/supertoroid.smf";
+    // desc.position = { 0.0, 0.0, 0.0, 1.0 };
+    // desc.rotate = { 0,0,45 };
+    // desc.scale = { 1,1,1 };
+
+    // PrimitiveDesc pDesc0;
+    // pDesc0.position = { -3, 0.0, 0.0, 1.0 };
+    // pDesc0.radius = 0.5;
+
+    // PrimitiveDesc pDesc1;
+    // pDesc1.position = { 3, 0.0, 0.0, 1.0 };
+    // pDesc1.radius = 0.5;
+
+    // PrimitiveDesc pDesc2;
+    // pDesc2.position = { 0.0, -3.0, 0.0, 1.0 };
+    // pDesc2.radius = 0.5;
+
+    // PrimitiveDesc pDesc3;
+    // pDesc3.position = { 0.0, 3.0, 0.0, 1.0 };
+    // pDesc3.radius = 0.5;
+
+    // init.meshSceneObjects.push_back(desc);
+
+    // init.primitiveSceneObjects.push_back(pDesc0);
+    // init.primitiveSceneObjects.push_back(pDesc1);
+    // init.primitiveSceneObjects.push_back(pDesc2);
+    // init.primitiveSceneObjects.push_back(pDesc3);
 
 
 

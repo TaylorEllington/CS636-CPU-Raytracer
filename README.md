@@ -23,9 +23,9 @@ or if you messed this up and cloned already without the submodules run
 
 Then set up an out of source build with CMake (you need to install CMake)
 
-`mkdir build`
-`cd build`
-`cmake ..`
+`mkdir build`  
+`cd build`    
+`cmake ..`  
 
 That should get you going by generating a project targeted towards whatever is the default build system in your environment. (makefiles, xcode, Visual Studio Solution etc). If you end up with the wrong thing, refer to the CMake docs to get the right generator set up. Once thats done, you should be able to get the raytracer open in your IDE of choice and run it from there. 
 
