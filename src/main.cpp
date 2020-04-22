@@ -13,7 +13,7 @@ void main(int argc, char** argv) {
     init.mWindowWidth = 512;
     init.mWindowHeight = 512;
     init.mWindowDebugMode = true;  // this gives us the purple background
-    init.mOutputFileName = "penny3.png";
+    init.mOutputFileName = "cube.png";
 
     init.camera.mPosition = { 0.0, 0.0, 6.0, 1.0 };
     init.camera.mViewDirection = glm::vec4(0,0,0, 1) - init.camera.mPosition;
@@ -23,10 +23,10 @@ void main(int argc, char** argv) {
     init.camera.mHorizontalViewAngle = 56.0;
 
     MeshDesc desc;
-    desc.filename = "assets/penny3.smf";
-    desc.position = { 0.0, 0.0, 0.0, 1.0 };
-    desc.rotate = { 0,90,0 };
-    desc.scale = { 0.2,0.2,0.2 };
+    desc.filename = "assets/cube.smf";
+    desc.position = { 1.0, 2.0, 1.0, 1.0 };
+    desc.rotate = { 0,45,0 };
+    desc.scale = { 1,1,1};
 
     init.meshSceneObjects.push_back(desc);
 

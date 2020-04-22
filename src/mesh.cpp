@@ -24,6 +24,7 @@ glm::mat4 Translate(float dx, float dy, float dz) {
     transMat[3][0] = dx;
     transMat[3][1] = dy;
     transMat[3][2] = dz;
+    std::cout << glm::to_string(transMat) << std::endl;
     return transMat;
 }
 
@@ -66,7 +67,7 @@ glm::mat4 BulidTransform(glm::vec4 pos, Scale scale, Rotate rotate) {
     glm::mat4 s = ScaleAll(scale.scaleX, scale.scaleY, scale.scaleX);
     glm::mat4 r = RotateZ(rotate.rotDegZ) * RotateY(rotate.rotDegY) * RotateX(rotate.rotDegY);
     glm::mat4 t = TranslateTo(glm::vec4(0, 0, 0, 1), pos);
-    glm::mat4 transform = s * r * t;
+    glm::mat4 transform = t;
 
     return transform;
 
@@ -76,7 +77,9 @@ glm::mat4 BulidTransform(glm::vec4 pos, Scale scale, Rotate rotate) {
 
 Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename)
 {
-    transform = BulidTransform(position, scale, rotate);
+    translateMat = TranslateTo(glm::vec4(0, 0, 0, 0), position);
+    rotateMat = RotateZ(rotate.rotDegZ) * RotateY(rotate.rotDegY) * RotateX(rotate.rotDegY);
+    scaleMat = ScaleAll(scale.scaleX, scale.scaleY, scale.scaleX);
 
     std::fstream file;
     file.open(filename);
@@ -110,8 +113,9 @@ Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename)
 
 Mesh::Mesh(glm::vec3 position, Scale scale, Rotate rotate, std::string filename)
 {
-
-    transform = BulidTransform(glm::vec4(position, 1), scale, rotate);
+    translateMat = TranslateTo(glm::vec4(0,0,0,0),glm::vec4(position, 1));
+    rotateMat  = RotateZ(rotate.rotDegZ)* RotateY(rotate.rotDegY)* RotateX(rotate.rotDegY);
+    scaleMat = ScaleAll(scale.scaleX, scale.scaleY, scale.scaleX);
 
     std::fstream file;
     file.open(filename);
@@ -147,18 +151,29 @@ Mesh::Mesh(glm::vec3 position, Scale scale, Rotate rotate, std::string filename)
 bool Mesh::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel& pix)
 {
 
+    glm::mat4 transform = translateMat * rotateMat * scaleMat;
+
     for (Face f : faces) {
 
-        glm::vec3 vert0 = vertices[f.vert[0]].coord * transform;
-        glm::vec3 vert1 = vertices[f.vert[1]].coord * transform;
-        glm::vec3 vert2 = vertices[f.vert[2]].coord * transform;
+
+        glm::vec3 vert0 = transform * vertices[f.vert[0]].coord;
+        glm::vec3 vert1 = transform * vertices[f.vert[1]].coord;
+        glm::vec3 vert2 = transform * vertices[f.vert[2]].coord;
+        //std::cout << "x: " << glm::to_string(vertices[f.vert[0]].coord)
+        //    << " y: " << glm::to_string(vertices[f.vert[1]].coord)
+        //    << " z: " << glm::to_string(vertices[f.vert[2]].coord) << std::endl;
+
+
+        ////std::cout << "x: " <<glm::to_string(vert0) 
+        //<< " y: " << glm::to_string(vert1)
+        //    << " z: " << glm::to_string(vert2) << std::endl;
 
         glm::mat3 matA = { {vert0 - vert1}, {vert0 - vert2}, {normRayVector} };
         float detA = glm::determinant(matA);
 
         glm::mat3 matBeta = { {vert0 - origin}, {vert0 - vert2}, {normRayVector} };
         glm::mat3 matGamma = { {vert0 - vert1}, {vert0 - origin}, {normRayVector} };
-        glm::mat3 matT = { {vert0 -vert1}, {vert0 - vert1}, {vert0 - origin} };
+        glm::mat3 matT = { {vert0 - vert1}, {vert0 - vert1}, {vert0 - origin} };
 
         float detBeta = glm::determinant(matBeta);
         float detGamma = glm::determinant(matGamma);

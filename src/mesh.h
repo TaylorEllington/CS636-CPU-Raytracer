@@ -44,7 +44,9 @@ public:
     bool CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel& pix) override;
 
 private:
-    glm::mat4 transform;
+    glm::mat4 translateMat;
+    glm::mat4 rotateMat;
+    glm::mat4 scaleMat;
     
     std::vector<Face> faces;
     std::vector<Vertex> vertices;
