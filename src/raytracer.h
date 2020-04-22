@@ -4,11 +4,18 @@
 
 #include <string>
 #include <vector>
+#include "nlohmann/json.hpp"
 
 // init object for meshes
-struct MeshDesc {
-    std::string filename;
+struct SceneObjDesc {
     glm::vec4 position;
+    std::string type;
+
+    //sphere only
+    float radius;
+
+    //mesh only
+    std::string filename;
     Scale scale;
     Rotate rotate;
 };
@@ -21,18 +28,24 @@ struct PrimitiveDesc {
 //init object for the whole scene
 struct RayTracerSettings {
     // setting up the window
-    int mWindowHeight = 0;
-    int mWindowWidth = 0;
-    bool mWindowDebugMode = 0;
+    int mWindowHeight = 1;
+    int mWindowWidth = 1;
+    bool mWindowDebugMode = false;
 
     //where to dump the file
     std::string mOutputFileName;
 
     //scene objects and associated data
     Camera camera;
-    std::vector<MeshDesc> meshSceneObjects;
-    std::vector<PrimitiveDesc> primitiveSceneObjects;
+    std::vector<SceneObjDesc> meshSceneObjects;
 };
+void to_json(nlohmann::json& j, const RayTracerSettings& p);
+void from_json(const nlohmann::json& j, RayTracerSettings& p);
+void to_json(nlohmann::json& j, const SceneObjDesc& p);
+void from_json(const nlohmann::json& j, SceneObjDesc& p);
+void to_json(nlohmann::json& j, const PrimitiveDesc& p);
+void from_json(const nlohmann::json& j, PrimitiveDesc& p);
+
 
 
 class RayTracer {

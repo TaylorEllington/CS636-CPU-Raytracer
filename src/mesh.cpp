@@ -24,7 +24,6 @@ glm::mat4 Translate(float dx, float dy, float dz) {
     transMat[3][0] = dx;
     transMat[3][1] = dy;
     transMat[3][2] = dz;
-    std::cout << glm::to_string(transMat) << std::endl;
     return transMat;
 }
 
@@ -107,42 +106,10 @@ Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename)
             faces.push_back(Face(p1 - 1, p2 - 1, p3 - 1));
         }
     }
-    file.close();
+    
+    std::cout << "Mesh - Loaded mesh: " << filename << " with "<<
+        vertices.size() << " verts and " << faces.size() <<" faces" << std::endl;
 
-}
-
-Mesh::Mesh(glm::vec3 position, Scale scale, Rotate rotate, std::string filename)
-{
-    translateMat = TranslateTo(glm::vec4(0,0,0,0),glm::vec4(position, 1));
-    rotateMat  = RotateZ(rotate.rotDegZ)* RotateY(rotate.rotDegY)* RotateX(rotate.rotDegY);
-    scaleMat = ScaleAll(scale.scaleX, scale.scaleY, scale.scaleX);
-
-    std::fstream file;
-    file.open(filename);
-
-    if (!file) {
-        throw std::runtime_error("File: " + filename + " does not exist! ");
-    }
-
-    std::string line;
-    while (std::getline(file, line)) {
-        float x = 0, y = 0, z = 0;
-        int p1 = 0, p2 = 0, p3 = 0;
-        char mode;
-
-        std::stringstream str(line);
-
-        str >> mode;
-
-        if (mode == 'v') {
-            str >> x >> y >> z;
-            vertices.push_back(Vertex({ x, y, z, 1.0 }));
-        }
-        else if (mode == 'f') {
-            str >> p1 >> p2 >> p3;
-            faces.push_back(Face(p1 - 1, p2 - 1, p3 - 1));
-        }
-    }
     file.close();
 
 }

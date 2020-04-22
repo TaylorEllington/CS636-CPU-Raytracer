@@ -1,0 +1,48 @@
+{
+  "window": {
+    "width": 512,
+    "height": 512,
+    "debug": true
+  },
+  "camera": {
+    "position": [ 0, 0, 6 ],
+    "up": [0, 1, 0 ],
+    "lookAtPoint": [0, 0, 0 ],
+    "viewPlaneDist": 1,
+    "hViewAngle": 56
+  },
+  "outputFile": "supertoroid.png",
+  "scene": {
+    "lights": [],
+    "intersectables":[
+
+         {
+          "type": "Mesh",
+          "filename": "assets/supertoroid.smf",
+          "position": [0,0,0],
+          "rotation": [0,0,45 ],
+          "scale": [1,1,1]
+        },
+        {
+          "type":"Sphere",
+          "position": [-3,0,0],
+          "radius" : 0.5
+        },
+        {
+          "type":"Sphere",
+          "position": [3,0,0],
+          "radius" : 0.5
+        },
+        {
+          "type":"Sphere",
+          "position": [0,-3,0],
+          "radius" : 0.5
+        },
+        {
+          "type":"Sphere",
+          "position": [0,3,0],
+          "radius" : 0.5
+        }
+    ]
+  }
+}

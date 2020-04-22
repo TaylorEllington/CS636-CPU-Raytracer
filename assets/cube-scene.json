@@ -1,0 +1,28 @@
+{
+  "window": {
+    "width": 512,
+    "height": 512,
+    "debug": true
+  },
+  "camera": {
+    "position": [ 0, 0, 6 ],
+    "up": [0, 1, 0 ],
+    "lookAtPoint": [0, 0, 0 ],
+    "viewPlaneDist": 1,
+    "hViewAngle": 56
+  },
+  "outputFile": "cube.png",
+  "scene": {
+    "lights": [],
+    "intersectables":[
+
+         {
+          "type": "Mesh",
+          "filename": "assets/cube.smf",
+          "position": [1,2,1],
+          "rotation": [0,45,0 ],
+          "scale": [1,1,1]
+        }
+    ]
+  }
+}

@@ -8,6 +8,7 @@ add_executable(ray-tracer
     sphere.h
 
 
+    camera.cpp
     mesh.cpp
     raytracer.cpp
     screen.cpp

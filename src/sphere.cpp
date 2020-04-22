@@ -2,9 +2,12 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include "ext.hpp"
 
+#include <iostream>
+
 Sphere::Sphere(glm::vec4 position, float radius):
     pos(position), r(radius)
 {
+    std::cout << "Sphere - Set up sphere at: [" << pos.x << ", " << pos.y << ", " << pos.z << "] with radius: "<< radius << std::endl;
 }
 
 bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel& pix)

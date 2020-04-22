@@ -12,32 +12,34 @@
 
 #include <iostream>
 
-RayTracer::RayTracer(RayTracerSettings init):
+RayTracer::RayTracer(RayTracerSettings init) :
     settings(init)
 {
 }
 
-
-
 void RayTracer::Run()
 {
     Screen screen(settings.mWindowWidth, settings.mWindowHeight, settings.mWindowDebugMode);
-    std::vector<Pixel> & img = screen.getImage();
+    std::vector<Pixel>& img = screen.getImage();
 
-    std::vector<Intersectable *> sceneObjects;
+    std::vector<Intersectable*> sceneObjects;
 
+    for (SceneObjDesc desc : settings.meshSceneObjects) {
+        if (desc.type == "Sphere") {
+            sceneObjects.push_back(new Sphere(desc.position, desc.radius));
+            continue;
+        }
 
-    for (MeshDesc m : settings.meshSceneObjects) {
-        sceneObjects.push_back(new Mesh(m.position, m.scale, m.rotate, m.filename));
+        if (desc.type == "Mesh") {
+            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename));
+            continue;
+        }
+        
     }
 
-    for (PrimitiveDesc p : settings.primitiveSceneObjects) {
-        sceneObjects.push_back(new Sphere(p.position, p.radius));
-    }
 
-   
-    glm::vec3 viewSideDirection = glm::cross(glm::vec3(settings.camera.mViewDirection) , glm::vec3(settings.camera.mViewUp)); //x_v
-    glm::vec3 viewSideUp = glm::cross( viewSideDirection, glm::vec3(settings.camera.mViewDirection)); //y_v
+    glm::vec3 viewSideDirection = glm::cross(glm::vec3(settings.camera.mViewDirection), glm::vec3(settings.camera.mViewUp)); //x_v
+    glm::vec3 viewSideUp = glm::cross(viewSideDirection, glm::vec3(settings.camera.mViewDirection)); //y_v
 
     // normalize the camera space X Y Z
     glm::vec3 viewDirection = glm::normalize(settings.camera.mViewDirection); //z_v
@@ -61,15 +63,19 @@ void RayTracer::Run()
 
     std::cout << "Raytracer - Performing inital setup with: \n" <<
         "\tCamera at " << glm::to_string(settings.camera.mPosition) << "\n" <<
-        "\tCamera Space - X:" << glm::to_string(viewSideDirection) << "\n"
-        "\tCamera Space - Y:" << glm::to_string(viewSideUp) << "\n"
-        "\tCamera Space - Z:" << glm::to_string(viewDirection) << "\n\n" <<
+        "\tCamera Space - X: " << glm::to_string(viewSideDirection) << "\n"
+        "\tCamera Space - Y: " << glm::to_string(viewSideUp) << "\n"
+        "\tCamera Space - Z: " << glm::to_string(viewDirection) << "\n\n" <<
 
+        "\tDist to view plane " << settings.camera.mDistanceToViewPlane << "\n\n" <<
+        "\tView angle (DEG) " << settings.camera.mHorizontalViewAngle << "\n\n" <<
 
         "\tView Plane center at: " << glm::to_string(centerOfViewPlane) << "\n" <<
         "\tView Plane upper left at: " << glm::to_string(imagePlaneTopLeft) << "\n" << std::endl;
 
-    std::cout << "starting raytrace of scene......" << std::endl;
+    std::cout << "Raytracer - Starting raytrace of scene"; 
+    int progressDelta = (settings.mWindowHeight * settings.mWindowWidth) / 10;
+    int progressGoal = progressDelta;
     auto startTime = std::chrono::high_resolution_clock::now();
 
 
@@ -88,9 +94,9 @@ void RayTracer::Run()
 
             glm::vec3 imagePlaneCoord = imagePlaneTopLeft + (hOffset * viewSideDirection) - (vOffset * viewSideUp);
             glm::vec3 dForPixel = imagePlaneCoord - glm::vec3(settings.camera.mPosition);
-            glm::vec3 dNormForPixel = glm::normalize(dForPixel);   
+            glm::vec3 dNormForPixel = glm::normalize(dForPixel);
 
-            for (Intersectable * object : sceneObjects) {
+            for (Intersectable* object : sceneObjects) {
                 Pixel pix;
                 bool intersect = object->CheckIntersection(settings.camera.mPosition, dNormForPixel, pix);
 
@@ -100,16 +106,59 @@ void RayTracer::Run()
                     break;
                 }
             }
+            if (index >= progressGoal) {
+                progressGoal += progressDelta;
+                std::cout << " . ";
+            }
+
         }
     } // end rt loops
 
 
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - startTime).count();
+    std::cout << "DONE" << std::endl;
 
-    std::cout << "Raytracer - tracing took " << duration << "ms" << std::endl;
+    std::cout << "Raytracer - Tracing took " << duration << "ms" << std::endl;
 
     screen.PrintImage(settings.mOutputFileName);
 }
 
+// ugly json parsing methods
+void to_json(nlohmann::json& j, const RayTracerSettings& p) {}
+void from_json(const nlohmann::json& j, RayTracerSettings& s) {
+    j.at("window").at("width").get_to(s.mWindowHeight);
+    j.at("window").at("height").get_to(s.mWindowWidth);
+    j.at("window").at("debug").get_to(s.mWindowDebugMode);
+    j.at("outputFile").get_to(s.mOutputFileName);
+    j.at("camera").get_to(s.camera);
+    j.at("scene").at("intersectables").get_to(s.meshSceneObjects);
+}
+void to_json(nlohmann::json& j, const SceneObjDesc& m) {}
+void from_json(const nlohmann::json& j, SceneObjDesc& m) {
+    // This must always be first because we need to know what types of types will be available to load
+    j.at("type").get_to(m.type); 
 
+    // position is type independant
+    auto pos = j.at("position");
+    m.position = glm::vec4(pos[0], pos[1], pos[2], 1.0); //point
+
+    if (m.type == "Sphere") {
+        j.at("radius").get_to(m.radius);
+        return;
+    }
+
+    if (m.type =="Mesh") {
+        j.at("filename").get_to(m.filename);
+
+        auto rot = j.at("rotation");
+        m.rotate = { rot[0],rot[1], rot[2] };
+
+        auto scale = j.at("scale");
+        m.scale = { scale[0],scale[1], scale[2] };
+
+        return;
+    }
+}
+void to_json(nlohmann::json& j, const PrimitiveDesc& p) {}
+void from_json(const nlohmann::json& j, PrimitiveDesc& p) {}

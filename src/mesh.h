@@ -39,7 +39,6 @@ struct Rotate {
 class Mesh : public Intersectable {
 public:
     Mesh(glm::vec4 position, Scale scale, Rotate rotate,  std::string filename);
-    Mesh(glm::vec3 position, Scale scale, Rotate rotate, std::string filename);
 
     bool CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel& pix) override;
 
