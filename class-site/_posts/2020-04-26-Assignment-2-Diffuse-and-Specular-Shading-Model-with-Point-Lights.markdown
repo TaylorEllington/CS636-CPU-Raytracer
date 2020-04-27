@@ -46,45 +46,42 @@ Shading logic begins in `raytracer.cpp` on line 127
 
 {% highlight c++ %}
 //phong shade diffuse and specular per each light
-        for (auto light : settings.lights) {
+for (auto light : settings.lights) {
 
-            glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
+    glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
 
-           
-            glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
-            glm::vec3 toEye = glm::normalize( glm::vec3(settings.camera.mPosition)- intersectionPoint);
-            glm::vec3 r = ((2 * glm::dot(toLight, intersectNorm)) * intersectNorm) - toLight;
+   
+    glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
+    glm::vec3 toEye = glm::normalize( glm::vec3(settings.camera.mPosition)- intersectionPoint);
+    glm::vec3 r = ((2 * glm::dot(toLight, intersectNorm)) * intersectNorm) - toLight;
 
-            float diffuseTheta = std::max(glm::dot(toLight, intersectNorm), 0.0f);
-            float specularTheta = std::max(glm::dot(r, toEye), 0.0f);
+    float diffuseTheta = std::max(glm::dot(toLight, intersectNorm), 0.0f);
+    float specularTheta = std::max(glm::dot(r, toEye), 0.0f);
 
-            float shinyness = object->getShinyness();
+    float shinyness = object->getShinyness();
 
-            float specularThetaToTheN = std::pow(specularTheta, shinyness);
+    float specularThetaToTheN = std::pow(specularTheta, shinyness);
 
-            float diffuseTermR = std::min(lightColor.r * object->getDiffuse() * matColor.r * diffuseTheta, 1.0f) ;
-            float diffuseTermG = std::min(lightColor.g * object->getDiffuse() * matColor.g * diffuseTheta, 1.0f);
-            float diffuseTermB = std::min(lightColor.b * object->getDiffuse() * matColor.b * diffuseTheta, 1.0f);
+    float diffuseTermR = std::min(lightColor.r * object->getDiffuse() * matColor.r * diffuseTheta, 1.0f) ;
+    float diffuseTermG = std::min(lightColor.g * object->getDiffuse() * matColor.g * diffuseTheta, 1.0f);
+    float diffuseTermB = std::min(lightColor.b * object->getDiffuse() * matColor.b * diffuseTheta, 1.0f);
 
-            float specularTermR = std::min(lightColor.r * object->getSpecular() * matColor.r * specularThetaToTheN, 1.0f);
-            float specularTermG = std::min(lightColor.g * object->getSpecular() * matColor.g * specularThetaToTheN, 1.0f);
-            float specularTermB = std::min(lightColor.b * object->getSpecular() * matColor.b * specularThetaToTheN, 1.0f);
-
-
-            image[index].r = image[index].r + diffuseTermR + specularTermR;
-            image[index].g = image[index].g + diffuseTermG + specularTermG;
-            image[index].b = image[index].b + diffuseTermB + specularTermB;
-        }
-
-        float sceneAmbient = settings.mSceneAmbient * object->getAmbient(); 
+    float specularTermR = std::min(lightColor.r * object->getSpecular() * matColor.r * specularThetaToTheN, 1.0f);
+    float specularTermG = std::min(lightColor.g * object->getSpecular() * matColor.g * specularThetaToTheN, 1.0f);
+    float specularTermB = std::min(lightColor.b * object->getSpecular() * matColor.b * specularThetaToTheN, 1.0f);
 
 
-
-        image[index].r += matColor.r * sceneAmbient;
-        image[index].g += matColor.g * sceneAmbient;
-        image[index].b += matColor.b * sceneAmbient;
-    }
+    image[index].r = image[index].r + diffuseTermR + specularTermR;
+    image[index].g = image[index].g + diffuseTermG + specularTermG;
+    image[index].b = image[index].b + diffuseTermB + specularTermB;
 }
+
+float sceneAmbient = settings.mSceneAmbient * object->getAmbient(); 
+
+image[index].r += matColor.r * sceneAmbient;
+image[index].g += matColor.g * sceneAmbient;
+image[index].b += matColor.b * sceneAmbient;
+
 {% endhighlight %} 
 
 ## Supersampling 
