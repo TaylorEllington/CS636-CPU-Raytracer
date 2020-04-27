@@ -13,7 +13,7 @@ The assignment did not require any specific references to the code-base to appea
 That gitlab also holds the code for this website, the C++ is in the `src/` directory.
 
 ### Supertoroid and Spheres
-This supersampled 512x512 image contains 2 white lights, 3 supertoroids and 4 spheres (3 in the foreground and one big one in the back) The full scene description with positions, shading parameters, and others settings can be viewed [here](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/assets/solarized-sphere-and-supertoroid-scene.json). More on this file and its role can be found below in a later section. 
+This supersampled 512x512 image contains 2 white lights, 3 supertoroids and 4 spheres (3 in the foreground and one big one in the back) The full scene description with positions, shading parameters, and others settings can be viewed [here](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/78479ca5a6a1d2dfb43439d28b928cb36916429c/assets/solarized-sphere-and-supertoroid-scene.json). More on this file and its role can be found below in a later section. 
 
 ![Supersampled Solarized Spheres and Supertoroid - HW1](/cs636-advanced-rendering-techniques/images/HW_2/ss-solar-spheres-and-supertoroid.png)  
 
