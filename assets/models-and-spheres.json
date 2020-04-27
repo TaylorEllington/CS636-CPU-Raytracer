@@ -15,6 +15,7 @@
   },
   "outputFile": "misc-models-and-spheres.png",
   "scene": {
+    "ambient": 0.01,
     "lights": [
       {
         "position": [0, 6, 4],

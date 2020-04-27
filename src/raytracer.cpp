@@ -164,10 +164,9 @@ void RayTracer::Run()
                         image[index].b = image[index].b + diffuseTermB + specularTermB;
                     }
 
-                    float sceneAmbient = 0.01 * object->getAmbient();  //TODO CONFIG ME
+                    float sceneAmbient = settings.mSceneAmbient * object->getAmbient(); 
 
-                    //ok future me, i need to sleep heres the plan:
-                    // 4) get tri-intersect working
+
 
                     image[index].r += matColor.r * sceneAmbient;
                     image[index].g += matColor.g * sceneAmbient;
@@ -269,6 +268,7 @@ void from_json(const nlohmann::json& j, RayTracerSettings& s) {
     j.at("camera").get_to(s.camera);
     j.at("scene").at("intersectables").get_to(s.meshSceneObjects);
     j.at("scene").at("lights").get_to(s.lights);
+    j.at("scene").at("ambient").get_to(s.mSceneAmbient);
 }
 void to_json(nlohmann::json& j, const SceneObjDesc& m) {}
 void from_json(const nlohmann::json& j, SceneObjDesc& m) {
