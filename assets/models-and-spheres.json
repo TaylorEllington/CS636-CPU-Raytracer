@@ -1,0 +1,131 @@
+{
+  "window": {
+    "width": 512,
+    "height": 512,
+    "debug": false,
+    "background": [7, 54, 66],
+    "supersample": true
+  },
+  "camera": {
+    "position": [ 0, 0, 20 ],
+    "up": [0, 1, 0 ],
+    "lookAtPoint": [0, 0, 0 ],
+    "viewPlaneDist": 1,
+    "hViewAngle": 56
+  },
+  "outputFile": "misc-models-and-spheres.png",
+  "scene": {
+    "lights": [
+      {
+        "position": [0, 6, 4],
+        "intensity": 1,
+        "color": [10,10,10]
+      },
+      {
+        "position": [-9, -10.5, 0],
+        "intensity": 1,
+        "color": [10,10,10]
+      }
+    ],
+    "intersectables":[
+        {
+          "_comment_": "This is the big sphere in the background",
+          "type":"Sphere",
+          "position": [0,0,-20],
+          "radius" : 15,
+          "color"  : [ 7, 54, 66],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 100
+        },
+        {
+          "type": "Mesh",
+          "filename": "assets/penny3.smf",
+          "position": [-3,0,0],
+          "rotation": [0,0,0],
+          "scale": [0.25,0.25,0.25],
+          "color"  : [ 42, 161, 152],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+                 {
+          "type": "Mesh",
+          "filename": "assets/teapot.smf",
+          "position": [1,-4,0],
+          "rotation": [0,0,45],
+          "scale": [1,1,1],
+          "color"  : [ 211, 54, 130],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+        {
+          "type": "Mesh",
+          "filename": "assets/bunny-1000.smf",
+          "position": [4,0,0],
+          "rotation": [0,0,45],
+          "scale": [2.5,2.5,2.5],
+          "color"  : [ 220, 50, 47],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+        {
+          "type":"Sphere",
+          "position": [-2,5,3],
+          "radius" : 0.5,
+          "color"  : [ 203,  75,  22],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+        {
+          "type":"Sphere",
+          "position": [-1,5,3],
+          "radius" : 0.5,
+          "color"  : [ 181, 137,   0],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+                {
+          "type":"Sphere",
+          "position": [0,5,3],
+          "radius" : 0.5,
+          "color"  : [ 133, 153,   10],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        },
+        {
+          "type":"Sphere",
+          "position": [1,5,3],
+          "radius" : 0.5,
+          "color"  : [ 38 ,139, 210],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1 ,
+          "shinyness": 30
+        },
+        {
+          "type":"Sphere",
+          "position": [2,5,3],
+          "radius" : 0.5,
+          "color"  : [ 108, 113, 196],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1,
+          "shinyness": 30
+        }
+    ]
+      }
+  }
+}

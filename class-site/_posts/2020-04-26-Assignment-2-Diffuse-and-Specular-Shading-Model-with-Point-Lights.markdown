@@ -36,9 +36,9 @@ Raytracer - Performing inital setup with:
         View Plane upper left at: vec3(-0.531709, 0.531709, 3.250000)
 
 Raytracer - Supersampling enabled, computations will be done on an 1024 x 1024image
-Raytracer - Starting raytrace of scene..........Raytracer - full screen color norm pass
-Raytracer - Supersampling image to512 x 512
-DONE
+Raytracer - Starting raytrace of scene..........DONE
+Raytracer - full screen color norm pass
+Raytracer - Supersampling image down to 512 x 512
 Raytracer - Tracing took           13223ms
 Raytracer - image proccessing took 17ms
 Raytracer - Total time: 13240ms
@@ -46,9 +46,47 @@ Screen - Writing 262144 pixels to 512 by 512 file: ss-solar-spheres-and-supertor
 {% endhighlight %}
 
 ### Another one
+This is more of a "everything-and-the-kitchen-sink" scene with higher face counts to really emphasize how expensive ray tracing is, The scene description is here.
 
 
-This image is yet to be generated, were getting there
+
+![flat spheres](/cs636-advanced-rendering-techniques/images/HW_2/ss-misc-models-and-spheres.png)
+
+This image, with its nearly 15,000 faces took 515482ms (over 8 minutes) to fully render. 
+
+{% highlight text %}
+Screen - Setting up image as 512 by 512
+Sphere - Set up sphere at: [0, 0, -20] with radius: 15
+Mesh - Loaded mesh: assets/penny3.smf with 3675 verts and 7344 faces
+Mesh - Loaded mesh: assets/teapot.smf with 3644 verts and 6320 faces
+Mesh - Loaded mesh: assets/bunny-1000.smf with 502 verts and 1000 faces
+Sphere - Set up sphere at: [-2, 5, 3] with radius: 0.5
+Sphere - Set up sphere at: [-1, 5, 3] with radius: 0.5
+Sphere - Set up sphere at: [0, 5, 3] with radius: 0.5
+Sphere - Set up sphere at: [1, 5, 3] with radius: 0.5
+Sphere - Set up sphere at: [2, 5, 3] with radius: 0.5
+Raytracer - Performing inital setup with:
+        Camera at vec4(0.000000, 0.000000, 20.000000, 1.000000)
+        Camera Space - X: vec3(1.000000, -0.000000, 0.000000)
+        Camera Space - Y: vec3(0.000000, 1.000000, 0.000000)
+        Camera Space - Z: vec3(0.000000, 0.000000, -1.000000)
+
+        Dist to view plane 1
+
+        View angle (DEG) 56
+
+        View Plane center at: vec3(0.000000, 0.000000, 19.000000)
+        View Plane upper left at: vec3(-0.531709, 0.531709, 19.000000)
+
+Raytracer - Supersampling enabled, computations will be done on an 1024 x 1024image
+Raytracer - Starting raytrace of scene..........DONE
+Raytracer - Full Screen color norm pass
+Raytracer - Supersampling image down to 512 x 512
+Raytracer - Tracing took           515465ms
+Raytracer - image proccessing took 17ms
+Raytracer - Total time: 515482ms
+Screen - Writing 262144 pixels to 512 by 512 file: ss-misc-models-and-spheres.png
+{% endhighlight %}
 
 ## Work in progress images
 
@@ -61,8 +99,8 @@ The first thing I did was add color to the homework 1 code, giving each scene ob
 
 The next step was to implement lights, and start to turn on the various components of phong shading. I did individual passes for the diffuse and ambient steps, however in all cases adding the specular component caused my lighting values to exceed acceptable thresholds and my images have bizarre unsightly color aberrations that aren't worth showing. 
 
-![diffuse spheres](/cs636-advanced-rendering-techniques/images/HW_2/diffuse_spheres.png)
-![ambient spheres](/cs636-advanced-rendering-techniques/images/HW_2/ambient_spheres.png)
+![diffuse spheres](/cs636-advanced-rendering-techniques/images/HW_2/diffuse-spheres.png)
+![ambient spheres](/cs636-advanced-rendering-techniques/images/HW_2/ambient-spheres.png)
 
 At this point I took a break to do some non-visible improvements such as a full image pass to normalize color intensities, add all the Phong shading values to the json file format so I could specify per object characteristics, enable supersampiling,  and some other minor refactoring to get certain code paths more readable. At the end of which I managed to get what I think is the coolest looking image of the set.
 
