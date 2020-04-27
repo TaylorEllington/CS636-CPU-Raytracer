@@ -46,7 +46,7 @@ Screen - Writing 262144 pixels to 512 by 512 file: ss-solar-spheres-and-supertor
 {% endhighlight %}
 
 ### Another one
-This is more of a "everything-and-the-kitchen-sink" scene with higher face counts to really emphasize how expensive ray tracing is, The scene description is here.
+This is more of a "everything-and-the-kitchen-sink" scene with higher face counts to really emphasize how expensive ray tracing is, The scene description is [here](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/db718a401f42e9f1b87b9c55195714f0d96dfa2d/assets/models-and-spheres.json).
 
 
 
