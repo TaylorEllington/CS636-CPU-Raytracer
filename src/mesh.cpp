@@ -88,6 +88,7 @@ Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename,
     if (!file) {
         throw std::runtime_error("File: " + filename + " does not exist! ");
     }
+    //dummy vert to maintain 1 -indexing 
     vertices.push_back(Vertex({ 0, 0, 0, 1.0 }));
     std::string line;
     while (std::getline(file, line)) {
@@ -98,7 +99,7 @@ Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename,
         std::stringstream str(line);
 
         str >> mode;
-        //dummy vert to maintain 1 -indexing 
+        
 
         if (mode == 'v') {
             str >> x >> y >> z;

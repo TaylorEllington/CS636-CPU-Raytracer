@@ -52,6 +52,7 @@ struct RayTracerSettings {
     Camera camera;
     std::vector<SceneObjDesc> meshSceneObjects;
     std::vector<LightDesc> lights;
+    float mSceneAmbient = 0.01;
 };
 void to_json(nlohmann::json& j, const RayTracerSettings& p);
 void from_json(const nlohmann::json& j, RayTracerSettings& p);
