@@ -4,13 +4,14 @@
 
 #include <iostream>
 
-Sphere::Sphere(glm::vec4 position, float radius):
-    pos(position), r(radius)
+
+Sphere::Sphere(glm::vec4 position, float radius, Pixel color, float ambient, float specular, float diffuse, float shinyness):
+    pos(position), r(radius), mColor(color), mAmbient(ambient), mSpecular(specular), mDiffuse(diffuse), mShinyness(shinyness)
 {
     std::cout << "Sphere - Set up sphere at: [" << pos.x << ", " << pos.y << ", " << pos.z << "] with radius: "<< radius << std::endl;
 }
 
-bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel& pix)
+bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, float & distance, glm::vec3 & normAtIntersection, Pixel& pix)
 {
     float A = glm::dot(normRayVector, normRayVector);
     float B = 2 * glm::dot(normRayVector, origin - glm::vec3(pos));
@@ -49,7 +50,25 @@ bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, Pixel&
     if (t0 < 0 && t1 < 0) {
         return false;
     }
+    distance = t0;
+    glm::vec3 intersectionPoint = origin + (normRayVector * t0);
+    normAtIntersection = glm::normalize(intersectionPoint - glm::vec3(pos));
 
-    pix = { 0,0,0 };
+    pix = mColor;
     return true;
+}
+
+
+float Sphere::getAmbient() {
+    return mAmbient;
+}
+float Sphere::getSpecular() {
+    return mSpecular;
+}
+float Sphere::getDiffuse() {
+    return mDiffuse;
+}
+
+float Sphere::getShinyness() {
+    return mShinyness;
 }

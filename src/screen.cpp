@@ -11,7 +11,7 @@
 //}
 
 
-Screen::Screen(int height, int width, bool debugPurple):
+Screen::Screen(int height, int width, Pixel backgroundColor, bool debugPurple):
     mHeight(height), mWidth(width), mDebugPurple(debugPurple)
 {
     std::cout << "Screen - Setting up image as " << mWidth << " by " << mHeight;
@@ -22,7 +22,7 @@ Screen::Screen(int height, int width, bool debugPurple):
     }
     else {
         std::cout << std::endl;
-        mImage.resize(mHeight * mWidth);
+        mImage.resize(mHeight * mWidth, backgroundColor);
     }
 
 

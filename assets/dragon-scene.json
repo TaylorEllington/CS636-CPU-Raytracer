@@ -7,13 +7,13 @@
     "supersample": false
   },
   "camera": {
-    "position": [ 0, 0, 6 ],
+    "position": [ 0, 0, 20 ],
     "up": [0, 1, 0 ],
     "lookAtPoint": [0, 0, 0 ],
     "viewPlaneDist": 1,
     "hViewAngle": 56
   },
-  "outputFile": "cube.png",
+  "outputFile": "dragon.png",
   "scene": {
     "lights": [
       {
@@ -31,37 +31,29 @@
 
          {
           "type": "Mesh",
-          "filename": "assets/cube.smf",
+          "filename": "assets/penny3.smf",
           "position": [0,0,0],
-          "rotation": [0,45,45 ],
+          "rotation": [0,0,0],
           "scale": [1,1,1],
-          "color"  : [ 133, 153,   0],
+          "color"  : [ 77, 12, 153],
           "diffuse": 0.3,
           "specular":0.6,
           "ambient" :0.1,
           "shinyness": 30
         },
-        {
+                {
           "_comment_": "This is the big sphere in the background",
           "type":"Sphere",
-          "position": [0,0,-20],
-          "radius" : 15,
+          "position": [0,0,-35],
+          "radius" : 30,
           "color"  : [ 7, 54, 66],
           "diffuse": 0.3,
           "specular":0.6,
           "ambient" :0.1,
           "shinyness": 100
-        },
-                {
-          "type":"Sphere",
-          "position": [-1,0,0],
-          "radius" : 0.25,
-          "color"  : [ 181, 137,   0],
-          "diffuse": 0.3,
-          "specular":0.6,
-          "ambient" :0.1,
-          "shinyness": 30
         }
+
+
     ]
   }
 }

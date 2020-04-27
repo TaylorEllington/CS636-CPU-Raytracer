@@ -7,7 +7,7 @@
 class Screen {
 
 public:
-    Screen(int height,int  width, bool debugPurple);
+    Screen(int height,int  width, Pixel backgroundColor, bool debugPurple);
     void PrintImage(std::string filename);
     std::vector<Pixel>& getImage();
 
