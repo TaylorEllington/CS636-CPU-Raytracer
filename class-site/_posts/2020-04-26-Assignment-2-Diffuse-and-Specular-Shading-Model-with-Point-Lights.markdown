@@ -48,11 +48,15 @@ Screen - Writing 262144 pixels to 512 by 512 file: ss-solar-spheres-and-supertor
 ### Another one
 This is more of a "everything-and-the-kitchen-sink" scene with higher face counts to really emphasize how expensive ray tracing is, The scene description is [here](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/db718a401f42e9f1b87b9c55195714f0d96dfa2d/assets/models-and-spheres.json).
 
+![models and spheres](/cs636-advanced-rendering-techniques/images/HW_2/ss-misc-models-and-spheres-different-settings.png)
 
+lets contrast this version, with a version where all objects have the same phong shading settings.
 
-![flat spheres](/cs636-advanced-rendering-techniques/images/HW_2/ss-misc-models-and-spheres.png)
+![models and spheres](/cs636-advanced-rendering-techniques/images/HW_2/ss-misc-models-and-spheres.png)
 
-This image, with its nearly 15,000 faces took 515482ms (over 8 minutes) to fully render. 
+The settings do make a big difference!
+
+This image, with its nearly 15,000 faces took 513732ms(over 8 minutes) to fully render. 
 
 {% highlight text %}
 Screen - Setting up image as 512 by 512
@@ -82,9 +86,9 @@ Raytracer - Supersampling enabled, computations will be done on an 1024 x 1024im
 Raytracer - Starting raytrace of scene..........DONE
 Raytracer - Full Screen color norm pass
 Raytracer - Supersampling image down to 512 x 512
-Raytracer - Tracing took           515465ms
+Raytracer - Tracing took           513715ms
 Raytracer - image proccessing took 17ms
-Raytracer - Total time: 515482ms
+Raytracer - Total time: 513732ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-misc-models-and-spheres.png
 {% endhighlight %}
 

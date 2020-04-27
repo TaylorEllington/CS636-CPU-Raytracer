@@ -183,9 +183,9 @@ void RayTracer::Run()
     } // end rt loops
 
     auto endRTTime = std::chrono::high_resolution_clock::now();
-
+    std::cout << "DONE" << std::endl;
     //full screen pass to normalize RGB colors
-    std::cout << "Raytracer - full screen color norm pass" << std::endl;
+    std::cout << "Raytracer - Full Screen color norm pass" << std::endl;
     glm::vec3 maxColor = { 0.0,0.0,0.0 };
     for (auto pix : image) {
         if (pix.r > maxColor.r) {
@@ -215,7 +215,7 @@ void RayTracer::Run()
                 
         size_t ssHeight = settings.mWindowHeight;
         size_t ssWidth = settings.mWindowWidth;
-        std::cout << "Raytracer - Supersampling image to" << ssHeight << " x " << ssWidth << std::endl;
+        std::cout << "Raytracer - Supersampling image down to " << ssHeight << " x " << ssWidth << std::endl;
         finalImage.resize(ssHeight* ssWidth);
 
         for (int vv = 0; vv < ssHeight; ++vv) {
@@ -243,7 +243,7 @@ void RayTracer::Run()
     auto stopTime = std::chrono::high_resolution_clock::now();
     auto RTduration = std::chrono::duration_cast<std::chrono::milliseconds>(endRTTime - startTime).count();
     auto imgProccessduration = std::chrono::duration_cast<std::chrono::milliseconds>(stopTime - endRTTime).count();
-    std::cout << "DONE" << std::endl;
+
 
     std::cout << "Raytracer - Tracing took           " << RTduration<< "ms" << std::endl;
     std::cout << "Raytracer - image proccessing took " << imgProccessduration << "ms" << std::endl;
