@@ -43,7 +43,7 @@ Raytracer - Tracing took           13223ms
 Raytracer - image proccessing took 17ms
 Raytracer - Total time: 13240ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-solar-spheres-and-supertoroid.png
-{% end highlight %}
+{% endhighlight %}
 
 ### Another one
 
