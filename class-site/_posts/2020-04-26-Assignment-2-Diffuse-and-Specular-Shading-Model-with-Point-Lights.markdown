@@ -15,7 +15,7 @@ That gitlab also holds the code for this website, the C++ is in the `src/` direc
 ### Supertoroid and Spheres
 This supersampled 512x512 image contains 2 white lights, 3 supertoroids and 4 spheres (3 in the foreground and one big one in the back) The full scene description with positions, shading parameters, and others settings can be viewed [here](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/assets/solarized-sphere-and-supertoroid-scene.json). More on this file and its role can be found below in a later section. 
 
-![Supersampled Solarized Spheres and Supertoroid - HW1](/cs636-advanced-rendering-techniques/images/hw_2/ss-solar-spheres-and-supertoroid.png)  
+![Supersampled Solarized Spheres and Supertoroid - HW1](/cs636-advanced-rendering-techniques/images/HW_2/ss-solar-spheres-and-supertoroid.png)  
 
 The image took 13240ms total, the log below shows how much of that was spent in raytracing (including shading) and how much was spent in full screen passes to normalize colors and sample the image down from the super-sized 1024x1024.
 
@@ -56,17 +56,17 @@ These images were created as I was bringing Phong shading online during developm
 
 The first thing I did was add color to the homework 1 code, giving each scene object its own RGB value that the ray trace intersection method would return, this meant the raytracing loop could start do add color to the scene. At this point I was still setting the nxm grid of pixels to a flat background color. 
 
-![flat spheres](/cs636-advanced-rendering-techniques/images/hw_2/solarized_spheres.png)
+![flat spheres](/cs636-advanced-rendering-techniques/images/HW_2/solarized_spheres.png)
 
 
 The next step was to implement lights, and start to turn on the various components of phong shading. I did individual passes for the diffuse and ambient steps, however in all cases adding the specular component caused my lighting values to exceed acceptable thresholds and my images have bizarre unsightly color aberrations that aren't worth showing. 
 
-![diffuse spheres](/cs636-advanced-rendering-techniques/images/hw_2/diffuse_spheres.png)
-![ambient spheres](/cs636-advanced-rendering-techniques/images/hw_2/ambient_spheres.png)
+![diffuse spheres](/cs636-advanced-rendering-techniques/images/HW_2/diffuse_spheres.png)
+![ambient spheres](/cs636-advanced-rendering-techniques/images/HW_2/ambient_spheres.png)
 
 At this point I took a break to do some non-visible improvements such as a full image pass to normalize color intensities, add all the Phong shading values to the json file format so I could specify per object characteristics, enable supersampiling,  and some other minor refactoring to get certain code paths more readable. At the end of which I managed to get what I think is the coolest looking image of the set.
 
-![Fully Raytraced Spheres](/cs636-advanced-rendering-techniques/images/hw_2/ss-five-spheres.png)
+![Fully Raytraced Spheres](/cs636-advanced-rendering-techniques/images/HW_2/ss-five-spheres.png)
 
 ## Whats with this Json file?
 
