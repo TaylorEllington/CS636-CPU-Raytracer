@@ -3,10 +3,14 @@
 #include "intersectable.h"
 #include "sphere.h"
 #include "mesh.h"
+#include "ray.h"
+#include "material.h"
+
 #include<algorithm>
 #include <math.h>  // tan, cos
 #include <limits>  // 
-#include <chrono>   
+#include <chrono> 
+
 #include "gtc/constants.hpp"  //pi half_pi
 #include "gtx/scalar_multiplication.hpp"
 
@@ -29,12 +33,12 @@ void RayTracer::Run()
 
     for (SceneObjDesc desc : settings.meshSceneObjects) {
         if (desc.type == "Sphere") {
-            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.color, desc.mAmbient, desc.mSpecular, desc.mDiffuse, desc.mShinyness));
+            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.color, desc.material));
             continue;
         }
 
         if (desc.type == "Mesh") {
-            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.mAmbient, desc.mSpecular, desc.mDiffuse, desc.mShinyness, desc.color));
+            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.color, desc.material, desc.settings));
             continue;
         }
         
@@ -113,11 +117,12 @@ void RayTracer::Run()
 
 
             //per object intersections - TODO: accelerate
-            for (Intersectable* object : sceneObjects) {
+            for (Intersectable * const  object : sceneObjects) {
                 Pixel pix;
                 float distToIntersect = 0;
                 glm::vec3 intersectNorm;
-                bool intersect = object->CheckIntersection(settings.camera.mPosition, dNormForPixel, distToIntersect, intersectNorm ,pix);
+                Ray ray = { settings.camera.mPosition, dNormForPixel };
+                bool intersect = object->CheckIntersection(ray, distToIntersect, intersectNorm ,pix);
 
                 glm::vec3 intersectionPoint = glm::vec3(settings.camera.mPosition) + dNormForPixel * distToIntersect;
 
@@ -133,12 +138,12 @@ void RayTracer::Run()
                     //put colors into a normalized space
                     glm::vec3 matColor = { pix.red / 255.0, pix.green / 255.0, pix.blue / 255.0 };
 
+                    Material mat = object->getMaterial();
                     //phong shade diffuse and specular per each light
-                    for (auto light : settings.lights) {
+                    for (auto & const light : settings.lights) {
 
                         glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
 
-                       
                         glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
                         glm::vec3 toEye = glm::normalize( glm::vec3(settings.camera.mPosition)- intersectionPoint);
                         glm::vec3 r = ((2 * glm::dot(toLight, intersectNorm)) * intersectNorm) - toLight;
@@ -146,27 +151,22 @@ void RayTracer::Run()
                         float diffuseTheta = std::max(glm::dot(toLight, intersectNorm), 0.0f);
                         float specularTheta = std::max(glm::dot(r, toEye), 0.0f);
 
-                        float shinyness = object->getShinyness();
+                        float specularThetaToTheN = std::pow(specularTheta, mat.mShinyness);
 
-                        float specularThetaToTheN = std::pow(specularTheta, shinyness);
+                        float diffuseTermR = std::min(lightColor.r * mat.mDiffuse * matColor.r * diffuseTheta, 1.0f) ;
+                        float diffuseTermG = std::min(lightColor.g * mat.mDiffuse * matColor.g * diffuseTheta, 1.0f);
+                        float diffuseTermB = std::min(lightColor.b * mat.mDiffuse * matColor.b * diffuseTheta, 1.0f);
 
-                        float diffuseTermR = std::min(lightColor.r * object->getDiffuse() * matColor.r * diffuseTheta, 1.0f) ;
-                        float diffuseTermG = std::min(lightColor.g * object->getDiffuse() * matColor.g * diffuseTheta, 1.0f);
-                        float diffuseTermB = std::min(lightColor.b * object->getDiffuse() * matColor.b * diffuseTheta, 1.0f);
-
-                        float specularTermR = std::min(lightColor.r * object->getSpecular() * matColor.r * specularThetaToTheN, 1.0f);
-                        float specularTermG = std::min(lightColor.g * object->getSpecular() * matColor.g * specularThetaToTheN, 1.0f);
-                        float specularTermB = std::min(lightColor.b * object->getSpecular() * matColor.b * specularThetaToTheN, 1.0f);
-
+                        float specularTermR = std::min(lightColor.r * mat.mSpecular * matColor.r * specularThetaToTheN, 1.0f);
+                        float specularTermG = std::min(lightColor.g * mat.mSpecular * matColor.g * specularThetaToTheN, 1.0f);
+                        float specularTermB = std::min(lightColor.b * mat.mSpecular * matColor.b * specularThetaToTheN, 1.0f);
 
                         image[index].r = image[index].r + diffuseTermR + specularTermR;
                         image[index].g = image[index].g + diffuseTermG + specularTermG;
                         image[index].b = image[index].b + diffuseTermB + specularTermB;
                     }
 
-                    float sceneAmbient = settings.mSceneAmbient * object->getAmbient(); 
-
-
+                    float sceneAmbient = settings.mSceneAmbient * mat.mAmbient; 
 
                     image[index].r += matColor.r * sceneAmbient;
                     image[index].g += matColor.g * sceneAmbient;
@@ -284,18 +284,18 @@ void from_json(const nlohmann::json& j, SceneObjDesc& m) {
     }
 
     if (j.count("diffuse") != 0) {
-        j.at("diffuse").get_to(m.mDiffuse);
+        j.at("diffuse").get_to(m.material.mDiffuse);
     }
 
     if (j.count("specular") != 0) {
-        j.at("specular").get_to(m.mSpecular);
+        j.at("specular").get_to(m.material.mSpecular);
     }
 
     if (j.count("ambient") != 0) {
-        j.at("ambient").get_to(m.mAmbient);
+        j.at("ambient").get_to(m.material.mAmbient);
     }
 
-    j.at("shinyness").get_to(m.mShinyness);
+    j.at("shinyness").get_to(m.material.mShinyness);
 
 
     if (m.type == "Sphere") {
@@ -304,6 +304,9 @@ void from_json(const nlohmann::json& j, SceneObjDesc& m) {
     }
 
     if (m.type =="Mesh") {
+        j.at("BVHmaxDepth").get_to(m.settings.maxDepth);
+        j.at("BVHtriThreshold").get_to(m.settings.triangleThreshold);
+
         j.at("filename").get_to(m.filename);
 
         auto rot = j.at("rotation");

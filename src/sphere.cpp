@@ -5,17 +5,17 @@
 #include <iostream>
 
 
-Sphere::Sphere(glm::vec4 position, float radius, Pixel color, float ambient, float specular, float diffuse, float shinyness):
-    pos(position), r(radius), mColor(color), mAmbient(ambient), mSpecular(specular), mDiffuse(diffuse), mShinyness(shinyness)
+Sphere::Sphere(glm::vec4 position, float radius, Pixel color, Material mat):
+    pos(position), r(radius), mColor(color), mMaterial(mat)
 {
     std::cout << "Sphere - Set up sphere at: [" << pos.x << ", " << pos.y << ", " << pos.z << "] with radius: "<< radius << std::endl;
 }
 
-bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, float & distance, glm::vec3 & normAtIntersection, Pixel& pix)
+bool Sphere::CheckIntersection(const Ray & ray, float & distance, glm::vec3 & normAtIntersection, Pixel& pix)
 {
-    float A = glm::dot(normRayVector, normRayVector);
-    float B = 2 * glm::dot(normRayVector, origin - glm::vec3(pos));
-    float C = glm::dot(origin - glm::vec3(pos), origin - glm::vec3(pos)) - (r * r);
+    float A = glm::dot(ray.mNormRayVector, ray.mNormRayVector);
+    float B = 2 * glm::dot(ray.mNormRayVector, ray.mOrigin - glm::vec3(pos));
+    float C = glm::dot(ray.mOrigin - glm::vec3(pos), ray.mOrigin - glm::vec3(pos)) - (r * r);
 
     float discrimiant  = B * B - 4 * A * C;
 
@@ -51,24 +51,14 @@ bool Sphere::CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, float 
         return false;
     }
     distance = t0;
-    glm::vec3 intersectionPoint = origin + (normRayVector * t0);
+    glm::vec3 intersectionPoint = ray.mOrigin + (ray.mNormRayVector * t0);
     normAtIntersection = glm::normalize(intersectionPoint - glm::vec3(pos));
 
     pix = mColor;
     return true;
 }
 
-
-float Sphere::getAmbient() {
-    return mAmbient;
-}
-float Sphere::getSpecular() {
-    return mSpecular;
-}
-float Sphere::getDiffuse() {
-    return mDiffuse;
-}
-
-float Sphere::getShinyness() {
-    return mShinyness;
+Material Sphere::getMaterial()
+{
+    return mMaterial;
 }

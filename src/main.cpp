@@ -6,8 +6,6 @@
 
 #include <fstream>
 
-
-
 RayTracerSettings parseSettingsJson(std::string filename) {
     std::fstream f(filename);
 
@@ -21,8 +19,6 @@ RayTracerSettings parseSettingsJson(std::string filename) {
     return settings;
 }
 
-
-
 void main(int argc, char** argv) {
 
     //read in any command line flags
@@ -30,10 +26,10 @@ void main(int argc, char** argv) {
     //instantiate the ray tracer
     //draw the image
 
-    //RayTracerSettings init = parseSettingsJson("assets/models-and-spheres.json");
+    RayTracerSettings init = parseSettingsJson("assets/models-and-spheres.json");
     //RayTracerSettings init = parseSettingsJson("assets/single-supertoroid.json");
     //RayTracerSettings init = parseSettingsJson("assets/spheres-scene.json");
-    RayTracerSettings init = parseSettingsJson("assets/solarized-sphere-and-supertoroid-scene.json");
+    //RayTracerSettings init = parseSettingsJson("assets/halo-ring-scene.json");
     
     RayTracer rt(init);
     rt.Run();
