@@ -1,0 +1,58 @@
+{
+  "window": {
+    "width": 512,
+    "height": 512,
+    "debug": false,
+    "background": [7, 54, 66],
+    "supersample": true
+  },
+  "camera": {
+    "position": [ 0, 0, 20 ],
+    "up": [0, 1, 0 ],
+    "lookAtPoint": [0, 0, 0 ],
+    "viewPlaneDist": 1,
+    "hViewAngle": 56
+  },
+  "outputFile": "halo-ring.png",
+  "scene": {
+    "ambient": 0.01,
+    "lights": [
+      {
+        "position": [9, -10.5, 0],
+        "intensity": 1,
+        "color": [10,10,10]
+      },
+       {
+        "position": [-2, -10.5, 3],
+        "intensity": 1,
+        "color": [10,10,10]
+      }
+    ],
+    "intersectables":[
+        {
+          "_comment_": "This is the big sphere in the background",
+          "type":"Sphere",
+          "position": [-8,8,-25],
+          "radius" : 20,
+          "color"  : [ 191, 119, 17],
+          "diffuse": 0.4,
+          "specular":0.1,
+          "ambient" :0.1,
+          "shinyness": 5
+        },
+        {
+          "type": "Mesh",
+          "filename": "assets/halo_ring_test.smf",
+          "position": [-1,-1,1],
+          "rotation": [25,0,-30],
+          "scale": [0.8,0.8,0.8],
+          "color"  : [192,192,192],
+          "diffuse": 0.4,
+          "specular":0.4,
+          "ambient" :0.2,
+          "shinyness": 50
+        }
+    ]
+      }
+  }
+}

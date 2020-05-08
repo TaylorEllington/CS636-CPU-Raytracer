@@ -5,10 +5,6 @@
 
 #include <iostream>
 
-//Pixel::Pixel(unsigned char r, unsigned char g, unsigned char b):
-//red(r), green(g), blue(b){
-//
-//}
 
 
 Screen::Screen(int height, int width, Pixel backgroundColor, bool debugPurple):

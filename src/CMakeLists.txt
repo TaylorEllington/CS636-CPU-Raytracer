@@ -1,5 +1,7 @@
 add_executable(ray-tracer
+    bounding-box.h
     camera.h
+    face.h
     intersectable.h
     mesh.h
     raytracer.h
@@ -7,8 +9,9 @@ add_executable(ray-tracer
     screen.h
     sphere.h
 
-
+    bounding-box.cpp
     camera.cpp
+    face.cpp
     mesh.cpp
     raytracer.cpp
     screen.cpp

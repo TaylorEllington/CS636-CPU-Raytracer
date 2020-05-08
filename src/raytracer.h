@@ -11,15 +11,13 @@ struct SceneObjDesc {
     glm::vec4 position;
     std::string type;
     Pixel color;
-    float mDiffuse;
-    float mSpecular;
-    float mAmbient;
-    float mShinyness;
+    Material material;
 
     //sphere only
     float radius;
 
     //mesh only
+    BVHSettings settings;
     std::string filename;
     Scale scale;
     Rotate rotate;

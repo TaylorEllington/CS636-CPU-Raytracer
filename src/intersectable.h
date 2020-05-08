@@ -2,14 +2,12 @@
 
 #include "pixel.h"
 #include "glm.hpp"
+#include "ray.h"
+#include "material.h"
 
 class Intersectable {
 public:
-    virtual bool CheckIntersection(glm::vec3 origin, glm::vec3 normRayVector, float & distance, glm::vec3 & normAtIntersection, Pixel& pix) = 0;
-
-    virtual float getAmbient() = 0;
-    virtual float getSpecular() = 0;
-    virtual float getDiffuse()= 0;
-    virtual float getShinyness() = 0;
+    virtual bool CheckIntersection(const Ray& ray, float& distance, glm::vec3& normAtIntersection, Pixel& pix) = 0;
+    virtual Material getMaterial() = 0;
 
 };
