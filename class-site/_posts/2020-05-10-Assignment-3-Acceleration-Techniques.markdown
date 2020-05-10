@@ -5,9 +5,6 @@ date:   2020-05-10 00:00:00 -0800
 categories: optimization
 visible: 1
 ---
-
-# Code points of Interest
-
 ## Building the Bounding Volume Hierarchy
 
 I recursively build the BVH tree inside of the Mesh object, BVH nodes are defined as:
@@ -20,7 +17,7 @@ struct BVHNode {
 };
 {% endhighlight %} 
 
-The strategy is to sort a collection of faces by their centroid (alternating sorts on the x, y, and z axis), and then divide the sorted collection in half. One half is passed down to the current node's `right` child, and the other half to the `left`. We then calculate the bounding box of the children nodes and recurse down to the left and the right. There are two functions:
+The strategy is to sort a collection of faces by their centroid (alternating sorts on the x, y, and z axis as we recurse down), and then divide the sorted collection in half. One half is passed down to the current node's `right` child, and the other half to the `left`. We then calculate the bounding box of the children nodes and recurse down to the left and the right. There are two functions controlling this behavior:
 
 {% highlight c++ %}
 BuildBVH(size_t triangleThreshold, size_t maxDepth)
@@ -49,7 +46,7 @@ void Mesh::BuildBVH(size_t triangleThreshold, size_t maxDepth) {
     RecursiveBuildBVH(triangleThreshold, maxDepth, 1, headNode.right.get());
 }
 
-void Mesh::RecursiveBuildBVH(size_t triangleThreshold, size_t maxDepth, size_t currentDepth, BVHNode* nodePtr) {
+void Mesh::RecursiveBuildBVH(size_t triangleThreshold, size_t maxDepth, size_t currentDepth, BVHNode* nodePtr){
     if (currentDepth > maxDepth || nodePtr->faces.size() < triangleThreshold) {
         return;
     }
@@ -92,7 +89,9 @@ void Mesh::RecursiveBuildBVH(size_t triangleThreshold, size_t maxDepth, size_t c
 The intersection is structured similarly with a recursive tree traversal, checking the ray against smaller and smaller bounding boxes until a node with no children is reached, then we run a ray intersect against the faces in that node and return up the results of the intersection. This code is on line 225 of `mesh.h` 
 
 {% highlight c++ %}
-bool Mesh::CheckIntersectionBVHRec(const Ray& ray, float& distance, glm::vec3& normAtIntersection, Pixel& pix, BVHNode * node) {
+bool Mesh::CheckIntersectionBVHRec(const Ray& ray, float& distance, glm::vec3& normAtIntersection, Pixel& pix,
+     BVHNode * node) {
+
     // sanity null check
     if (node == nullptr) {
         return false;
@@ -126,9 +125,9 @@ bool Mesh::CheckIntersectionBVHRec(const Ray& ray, float& distance, glm::vec3& n
     bool intersectLeft = CheckIntersectionBVHRec(ray, leftDist, leftNorm, leftPix, node->left.get());
     bool intersectRight = CheckIntersectionBVHRec(ray, rightDist, rightNorm, rightPix, node->right.get());
 
-    // This is obnoxiously verbose, but when I tried to condense everything down into clever little blocks of code
-    // I ended up with false negatives, or inverted geometry where the farther pixel was reported over the nearer one
-    // Ill trade elegance for readability and correctness anyday. 
+    // This is obnoxiously verbose, but when I tried to condense everything down into clever little blocks
+    // of code I ended up with false negatives, or inverted geometry where the farther pixel was reported
+    // over the nearer one. Ill trade elegance for readability and correctness any day. 
     if (intersectRight && intersectLeft) {
         if (rightDist < leftDist) {
             distance = rightDist;
@@ -161,7 +160,7 @@ bool Mesh::CheckIntersectionBVHRec(const Ray& ray, float& distance, glm::vec3& n
 }
 {% endhighlight %}
 
-# Images and the speedup from optimization
+## Images and The Speedup From Optimization
 Remember this scene from assignment 2? 
 
 ![Super-sampled spheres and meshes before optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/before-ss-misc-models-and-spheres.png)
@@ -202,7 +201,7 @@ Raytracer - Total time: 513732ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-misc-models-and-spheres.png
 {% endhighlight %}
 
-After implementing bounding volumes (boxes) and a BVH optimization approach we now have the same image
+That 513732m time is really unwieldy, especially as we add more steps that will be casting rays for shadows, reflection, and other features. After implementing bounding volumes (boxes) and a BVH optimization approach we now have the same image
 
 ![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/after-ss-misc-models-and-spheres.png)
 
@@ -245,20 +244,24 @@ Raytracer - Total time: 394ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-misc-models-and-spheres.png
 {% endhighlight %}
 
-While we don't need to replicate the build logs for a second scene, we can also discuss the other sphere and mesh scene from the previous homework 
+That improves the run time by over 1000%, so thats a good thing in my book. 
+
+Lets look at a scene that had fewer triangles. While we don't need to replicate the build logs for a second scene, we can discuss the other sphere and mesh scene from the previous homework 
 
 ![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/ss-solar-spheres-and-supertoroid.png)
 
 In HW2, before the optimizations, this scene took 13240ms. Now with the BVH in play we can cut that down to 479ms
 
 
-# Work in progress observations
+## Work in Progress Observations
 
 The first thing I did was to wrap the polymesh objects in bounding boxes determined by the extreme x, y, and z values of the mesh's individual verticies. This saw a massive improvement in render time, On the scene shown above, bounding boxes alone shifted total render time from 513,732ms to  28,889ms, thats an order of magnitude! This was on a scene that had several non-polymesh objects and near 15,000 total triangles. Since this bounding box change only impacts polymeshes and we still have to test one box per polymesh per pixel and n many spheres per pixel, the benefit of this speedup will scale with total scene complexity, ratio of spheres to triangles, and total number of triangles. 
 
-The next step was a clean up, I had tons of places where I passed around `glm::vec3` pairs of `origin` and `normRayVector`, so I collapsed these into a `Ray` class. I did something similar with the Phong shading values, packing these into a `Material` class.  
+The next step was a clean up, I had tons of places where I passed around `glm::vec3` pairs of `origin` and `normRayVector`, so I collapsed these into a `Ray` class. I did something similar with the Phong shading values, packing these into a `Material` class. 
+
+Once this was done I added the BVH node and the recursive methods to generate and traverse them as listed above. Once this was working I was able to observe the exceptional speed up, even beyond what bounding boxes by themselves could do.  
 
 
 
-# Discussion of BVH vs Octree
+## Discussion of BVH vs Octree
 for my own future reference: https://computergraphics.stackexchange.com/questions/7828/difference-between-bvh-and-octree-k-d-trees
