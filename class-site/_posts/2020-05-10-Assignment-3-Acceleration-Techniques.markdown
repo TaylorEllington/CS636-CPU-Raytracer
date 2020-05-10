@@ -17,7 +17,7 @@ struct BVHNode {
 };
 {% endhighlight %} 
 
-The strategy is to sort a collection of faces by their centroid (alternating sorts on the x, y, and z axis as we recurse down), and then divide the sorted collection in half. One half is passed down to the current node's `right` child, and the other half to the `left`. We then calculate the bounding box of the children nodes and recurse down to the left and the right. There are two functions controlling this behavior:
+The strategy is to sort a collection of faces by their centroid (alternating sorts on the x, y, and z axis as we recurse down), and then divide the sorted collection in half. One half is passed down to the current node's `right` child, and the other half to the `left`. We then calculate the bounding box of the children nodes and recurse down to the left and the right. The recursion is controlled by two tunable parameters `triangleThreshold` - the maxumum number of triangles we want in a node, and `maxDepth` - the maximum number of times we can recurse down and create new nodes, this overrides triangleThreshold to prevent a runaway recursion scenario. These are  are set on a per mesh basis in the scene description Hypothetically allowing us to tune each mesh [for example](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/2796b0107b6372da89e95dedb70bfd95bec000e5/assets/models-and-spheres.json). There are two functions controlling this recursive creation behavior:
 
 {% highlight c++ %}
 BuildBVH(size_t triangleThreshold, size_t maxDepth)
