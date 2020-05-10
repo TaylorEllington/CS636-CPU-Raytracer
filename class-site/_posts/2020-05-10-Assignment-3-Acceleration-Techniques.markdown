@@ -205,7 +205,7 @@ That 513732m time is really unwieldy, especially as we add more steps that will 
 
 ![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/after-ss-misc-models-and-spheres.png)
 
-but with a much smaller render time!
+but with a much smaller render time! Its down to 394ms! (note that the log now also prints out the two opposite verts that define a mesh's bounding box)
 
 {% highlight text %}
 Screen - Setting up image as 512 by 512
