@@ -15,17 +15,17 @@
   },
   "outputFile": "misc-models-and-spheres.png",
   "scene": {
-    "ambient": 0.01,
+    "ambient": 0.6,
     "lights": [
       {
         "position": [0, 6, 4],
         "intensity": 1,
-        "color": [10,10,10]
+        "color": [200,200,200]
       },
       {
         "position": [-9, -10.5, 0],
         "intensity": 1,
-        "color": [10,10,10]
+        "color": [255,255,255]
       }
     ],
     "intersectables":[
@@ -37,7 +37,7 @@
           "color"  : [ 7, 54, 66],
           "diffuse": 0.2,
           "specular":0.4,
-          "ambient" :0.05,
+          "ambient" :0.1,
           "shinyness": 80
         },
         {

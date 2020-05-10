@@ -26,10 +26,11 @@ void main(int argc, char** argv) {
     //instantiate the ray tracer
     //draw the image
 
-    RayTracerSettings init = parseSettingsJson("assets/models-and-spheres.json");
+    //RayTracerSettings init = parseSettingsJson("assets/models-and-spheres.json");
     //RayTracerSettings init = parseSettingsJson("assets/single-supertoroid.json");
     //RayTracerSettings init = parseSettingsJson("assets/spheres-scene.json");
     //RayTracerSettings init = parseSettingsJson("assets/halo-ring-scene.json");
+    RayTracerSettings init = parseSettingsJson("assets/solarized-sphere-and-supertoroid-scene.json");
     
     RayTracer rt(init);
     rt.Run();

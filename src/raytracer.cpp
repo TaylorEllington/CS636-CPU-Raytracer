@@ -185,7 +185,7 @@ void RayTracer::Run()
     std::cout << "DONE" << std::endl;
     //full screen pass to normalize RGB colors
     std::cout << "Raytracer - Full Screen color norm pass" << std::endl;
-    glm::vec3 maxColor = { 0.0,0.0,0.0 };
+    glm::vec3 maxColor = { 1.0,1.0,1.0 };
     for (auto pix : image) {
         if (pix.r > maxColor.r) {
             maxColor.r = pix.r;

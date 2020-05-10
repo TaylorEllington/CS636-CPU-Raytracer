@@ -245,11 +245,20 @@ Raytracer - Total time: 394ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-misc-models-and-spheres.png
 {% endhighlight %}
 
+While we don't need to replicate the build logs for a second scene, we can also discuss the other sphere and mesh scene from the previous homework 
+
+![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/ss-solar-spheres-and-supertoroid.png)
+
+In HW2, before the optimizations, this scene took 13240ms. Now with the BVH in play we can cut that down to 479ms
+
+
 # Work in progress observations
 
 The first thing I did was to wrap the polymesh objects in bounding boxes determined by the extreme x, y, and z values of the mesh's individual verticies. This saw a massive improvement in render time, On the scene shown above, bounding boxes alone shifted total render time from 513,732ms to  28,889ms, thats an order of magnitude! This was on a scene that had several non-polymesh objects and near 15,000 total triangles. Since this bounding box change only impacts polymeshes and we still have to test one box per polymesh per pixel and n many spheres per pixel, the benefit of this speedup will scale with total scene complexity, ratio of spheres to triangles, and total number of triangles. 
 
 The next step was a clean up, I had tons of places where I passed around `glm::vec3` pairs of `origin` and `normRayVector`, so I collapsed these into a `Ray` class. I did something similar with the Phong shading values, packing these into a `Material` class.  
+
+
 
 # Discussion of BVH vs Octree
 for my own future reference: https://computergraphics.stackexchange.com/questions/7828/difference-between-bvh-and-octree-k-d-trees
