@@ -248,9 +248,11 @@ That improves the run time by over 1000%, so thats a good thing in my book.
 
 Lets look at a scene that had fewer triangles. While we don't need to replicate the build logs for a second scene, we can discuss the other sphere and mesh scene from the previous homework 
 
-![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/ss-solar-spheres-and-supertoroid.png)
+![Super-sampled spheres and meshes before optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/before-ss-solar-spheres-and-supertoroid.png)
 
-In HW2, before the optimizations, this scene took 13240ms. Now with the BVH in play we can cut that down to 479ms
+In HW2, before the optimizations, this scene took 13240ms. Now with the BVH in play we can cut that down to 479ms. Just to verify, heres the scene rendered with the optimizations 
+
+![Super-sampled spheres and meshes after optimization - HW3](/cs636-advanced-rendering-techniques/images/HW_3/after-ss-solar-spheres-and-supertoroid.png)
 
 
 ## Work in Progress Observations
