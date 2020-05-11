@@ -4,7 +4,7 @@
     "height": 512,
     "debug": false,
     "background": [7, 54, 66],
-    "supersample": false
+    "supersample": true
   },
   "camera": {
     "position": [ 0, 0, 20 ],
@@ -15,45 +15,35 @@
   },
   "outputFile": "dragon.png",
   "scene": {
+    "ambient": 0.8,
     "lights": [
       {
         "position": [0, 3.5, 2],
         "intensity": 1,
-        "color": [10,10,10]
+        "color": [7,41,77]
       },
       {
         "position": [9, 10.5, 0],
         "intensity": 1,
-        "color": [10,10,10]
+        "color": [255,198,0]
       }
     ],
     "intersectables":[
 
          {
           "type": "Mesh",
-          "filename": "assets/penny3.smf",
-          "position": [0,0,0],
-          "rotation": [0,0,0],
-          "scale": [1,1,1],
-          "color"  : [ 77, 12, 153],
-          "diffuse": 0.3,
+          "BVHmaxDepth" : 25 ,
+          "BVHtriThreshold" : 5,
+          "filename": "assets/dragon.smf",
+          "position": [0,-5,0],
+          "rotation": [0,50,0],
+          "scale": [8,8,8],
+          "color"  : [ 7,41,77],
+          "diffuse": 0.4,
           "specular":0.6,
-          "ambient" :0.1,
+          "ambient" :0.6,
           "shinyness": 30
-        },
-                {
-          "_comment_": "This is the big sphere in the background",
-          "type":"Sphere",
-          "position": [0,0,-35],
-          "radius" : 30,
-          "color"  : [ 7, 54, 66],
-          "diffuse": 0.3,
-          "specular":0.6,
-          "ambient" :0.1,
-          "shinyness": 100
         }
-
-
     ]
   }
 }

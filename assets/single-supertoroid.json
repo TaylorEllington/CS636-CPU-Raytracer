@@ -32,6 +32,8 @@
 
          {
           "type": "Mesh",
+          "BVHmaxDepth" : 25 ,
+          "BVHtriThreshold" : 5,
           "filename": "assets/supertoroid.smf",
           "position": [0,0,0],
           "rotation": [0,0,0],
