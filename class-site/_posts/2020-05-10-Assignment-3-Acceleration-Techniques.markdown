@@ -260,6 +260,31 @@ Lastly we can look at a single mesh scene. Since our BVH changes only impacts me
 
 Heres the log:
 
+Screen - Setting up image as 512 by 512
+Mesh - Loaded mesh: assets/dragon.smf with 25418 verts and 50761 faces
+Raytracer - Performing inital setup with:
+        Camera at vec4(0.000000, 0.000000, 20.000000, 1.000000)
+        Camera Space - X: vec3(1.000000, -0.000000, 0.000000)
+        Camera Space - Y: vec3(0.000000, 1.000000, 0.000000)
+        Camera Space - Z: vec3(0.000000, 0.000000, -1.000000)
+
+        Dist to view plane 1
+
+        View angle (DEG) 56
+
+        View Plane center at: vec3(0.000000, 0.000000, 19.000000)
+        View Plane upper left at: vec3(-0.531709, 0.531709, 19.000000)
+
+Raytracer - Supersampling enabled, computations will be done on an 1024 x 1024image
+Raytracer - Starting raytrace of scene..........DONE
+Raytracer - Full Screen color norm pass
+Raytracer - Supersampling image down to 512 x 512
+Raytracer - Tracing took           26042355ms
+Raytracer - image proccessing took 16ms
+Raytracer - Total time: 26042371ms
+Screen - Writing 262144 pixels to 512 by 512 file: ss-dragon.png
+
+
 
 And now after the improvements we get the same scene
 
@@ -294,6 +319,8 @@ Raytracer - Total time: 630ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-dragon.png
 {% endhighlight %}
 
+
+It is apparent that the speedup is directly related to the number of ray-triangle intersections we can avoid, the bounding boxes around progressively smaller clusters of faces enable us to fully skip entire chunks of the model.
 
 ## Work in Progress Observations
 
