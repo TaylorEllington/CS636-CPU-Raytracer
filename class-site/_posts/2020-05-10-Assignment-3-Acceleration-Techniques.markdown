@@ -259,7 +259,7 @@ Lastly we can look at a single mesh scene. Since our BVH changes only impacts me
 ![Super-sampled dragon isolation scene](/cs636-advanced-rendering-techniques/images/HW_3/before-ss-dragon.png)
 
 Heres the log:
-
+{% highlight text %}
 Screen - Setting up image as 512 by 512
 Mesh - Loaded mesh: assets/dragon.smf with 25418 verts and 50761 faces
 Raytracer - Performing inital setup with:
@@ -283,7 +283,7 @@ Raytracer - Tracing took           26042355ms
 Raytracer - image proccessing took 16ms
 Raytracer - Total time: 26042371ms
 Screen - Writing 262144 pixels to 512 by 512 file: ss-dragon.png
-
+{% endhighlight %}
 
 
 And now after the improvements we get the same scene
