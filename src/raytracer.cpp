@@ -24,6 +24,48 @@ RayTracer::RayTracer(RayTracerSettings init) :
 {
 }
 
+void PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3 & intersectionPoint, const glm::vec3 & intersectNorm,  const Camera & camera,  const Pixel& pix, const  std::vector<LightDesc>& lights, const float & globalAmbient) {
+
+    //wipe out further back objects or background color
+    pixel = glm::vec3(0.0, 0.0, 0.0);
+
+    //put colors into a normalized space
+    glm::vec3 matColor = { pix.red / 255.0, pix.green / 255.0, pix.blue / 255.0 };
+
+    //phong shade diffuse and specular per each light
+    for (auto& const light : lights) {
+
+        glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
+
+        glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
+        glm::vec3 toEye = glm::normalize(glm::vec3(camera.mPosition) - intersectionPoint);
+        glm::vec3 r = ((2 * glm::dot(toLight, intersectNorm)) * intersectNorm) - toLight;
+
+        float diffuseTheta = std::max(glm::dot(toLight, intersectNorm), 0.0f);
+        float specularTheta = std::max(glm::dot(r, toEye), 0.0f);
+
+        float specularThetaToTheN = std::pow(specularTheta, mat.mShinyness);
+
+        float diffuseTermR = std::min(lightColor.r * mat.mDiffuse * matColor.r * diffuseTheta, 1.0f);
+        float diffuseTermG = std::min(lightColor.g * mat.mDiffuse * matColor.g * diffuseTheta, 1.0f);
+        float diffuseTermB = std::min(lightColor.b * mat.mDiffuse * matColor.b * diffuseTheta, 1.0f);
+
+        float specularTermR = std::min(lightColor.r * mat.mSpecular * matColor.r * specularThetaToTheN, 1.0f);
+        float specularTermG = std::min(lightColor.g * mat.mSpecular * matColor.g * specularThetaToTheN, 1.0f);
+        float specularTermB = std::min(lightColor.b * mat.mSpecular * matColor.b * specularThetaToTheN, 1.0f);
+
+        pixel.r = pixel.r + diffuseTermR + specularTermR;
+        pixel.g = pixel.g + diffuseTermG + specularTermG;
+        pixel.b = pixel.b + diffuseTermB + specularTermB;
+    }
+
+    float sceneAmbient = globalAmbient * mat.mAmbient;
+
+    pixel.r += matColor.r * sceneAmbient;
+    pixel.g += matColor.g * sceneAmbient;
+    pixel.b += matColor.b * sceneAmbient;
+}
+
 void RayTracer::Run()
 {
     Screen screen(settings.mWindowWidth , settings.mWindowHeight , settings.mBackgroundColor, settings.mWindowDebugMode);
@@ -94,9 +136,13 @@ void RayTracer::Run()
 
     int progressDelta = (height * width) / 10;
     int progressGoal = progressDelta;
+    size_t primaryRayCounter = 0;
     auto startTime = std::chrono::high_resolution_clock::now();
 
     std::vector<glm::vec3> image(height * width);
+
+    std::vector<glm::vec3> pixCache(height + 1 * width + 1);
+
     for (int vv = 0; vv < height; ++vv) {
         for (int hh = 0; hh < width; ++hh) {
 
@@ -112,67 +158,23 @@ void RayTracer::Run()
             glm::vec3 imagePlaneCoord = imagePlaneTopLeft + (hOffset * viewSideDirection) - (vOffset * viewSideUp);
             glm::vec3 dForPixel = imagePlaneCoord - glm::vec3(settings.camera.mPosition);
             glm::vec3 dNormForPixel = glm::normalize(dForPixel);
+            Ray ray = { settings.camera.mPosition, dNormForPixel };
 
-            float nearestDist = std::numeric_limits<float>::max();
+            //float nearestDist = ;
 
+            Intersectable* obj = nullptr;
+            glm::vec3 normal;
+            float dist;
+            Pixel pix = { 0.0,0.0,0.0 };
 
-            //per object intersections - TODO: accelerate
-            for (Intersectable * const  object : sceneObjects) {
-                Pixel pix;
-                float distToIntersect = 0;
-                glm::vec3 intersectNorm;
-                Ray ray = { settings.camera.mPosition, dNormForPixel };
-                bool intersect = object->CheckIntersection(ray, distToIntersect, intersectNorm ,pix);
+            bool didIntersect = ShootRay(ray, sceneObjects ,obj, normal, dist, pix);
+            ++primaryRayCounter;
 
-                glm::vec3 intersectionPoint = glm::vec3(settings.camera.mPosition) + dNormForPixel * distToIntersect;
-
-
-
-                //shading happens here
-                if (intersect && distToIntersect < nearestDist) {
-                    nearestDist = distToIntersect;
-
-                    //wipe out further back objects or background color
-                    image[index] = glm::vec3(0.0, 0.0, 0.0);
-
-                    //put colors into a normalized space
-                    glm::vec3 matColor = { pix.red / 255.0, pix.green / 255.0, pix.blue / 255.0 };
-
-                    Material mat = object->getMaterial();
-                    //phong shade diffuse and specular per each light
-                    for (auto & const light : settings.lights) {
-
-                        glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
-
-                        glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
-                        glm::vec3 toEye = glm::normalize( glm::vec3(settings.camera.mPosition)- intersectionPoint);
-                        glm::vec3 r = ((2 * glm::dot(toLight, intersectNorm)) * intersectNorm) - toLight;
-
-                        float diffuseTheta = std::max(glm::dot(toLight, intersectNorm), 0.0f);
-                        float specularTheta = std::max(glm::dot(r, toEye), 0.0f);
-
-                        float specularThetaToTheN = std::pow(specularTheta, mat.mShinyness);
-
-                        float diffuseTermR = std::min(lightColor.r * mat.mDiffuse * matColor.r * diffuseTheta, 1.0f) ;
-                        float diffuseTermG = std::min(lightColor.g * mat.mDiffuse * matColor.g * diffuseTheta, 1.0f);
-                        float diffuseTermB = std::min(lightColor.b * mat.mDiffuse * matColor.b * diffuseTheta, 1.0f);
-
-                        float specularTermR = std::min(lightColor.r * mat.mSpecular * matColor.r * specularThetaToTheN, 1.0f);
-                        float specularTermG = std::min(lightColor.g * mat.mSpecular * matColor.g * specularThetaToTheN, 1.0f);
-                        float specularTermB = std::min(lightColor.b * mat.mSpecular * matColor.b * specularThetaToTheN, 1.0f);
-
-                        image[index].r = image[index].r + diffuseTermR + specularTermR;
-                        image[index].g = image[index].g + diffuseTermG + specularTermG;
-                        image[index].b = image[index].b + diffuseTermB + specularTermB;
-                    }
-
-                    float sceneAmbient = settings.mSceneAmbient * mat.mAmbient; 
-
-                    image[index].r += matColor.r * sceneAmbient;
-                    image[index].g += matColor.g * sceneAmbient;
-                    image[index].b += matColor.b * sceneAmbient;
-                }
+            if (didIntersect) {
+                glm::vec3 intersectionPoint = glm::vec3(settings.camera.mPosition) + dNormForPixel * dist;
+                PhongShading(image[index], obj->getMaterial(), intersectionPoint, normal, settings.camera, pix, settings.lights, settings.mSceneAmbient);
             }
+
             // subtle progress reporting 
             if (index >= progressGoal) {
                 progressGoal += progressDelta;
@@ -247,12 +249,39 @@ void RayTracer::Run()
     std::cout << "Raytracer - Tracing took           " << RTduration<< "ms" << std::endl;
     std::cout << "Raytracer - image proccessing took " << imgProccessduration << "ms" << std::endl;
     std::cout << "Raytracer - Total time: " << RTduration + imgProccessduration << "ms" << std::endl;
+    std::cout << "Raytracer - Ray Stats: " << std::endl;
+    std::cout << "            Primary Rays: " << primaryRayCounter <<  std::endl;
 
     std::string filename = settings.mOutputFileName;
     if (settings.mSupersample) {
         filename = "ss-" + filename;
     }
     screen.PrintImage(filename);
+}
+
+bool RayTracer::ShootRay(Ray ray, std::vector<Intersectable*> sceneObjects, Intersectable *& intersectedObject, glm::vec3& intersectionNormal, float& intersectionDistance, Pixel& pix)
+{
+    intersectionDistance = std::numeric_limits<float>::max();
+    bool didHit = false;
+
+    Pixel p;
+    glm::vec3 norm;
+    for (Intersectable* object : sceneObjects) {
+    
+        float distToIntersect = std::numeric_limits<float>::max();
+        glm::vec3 intersectNorm;
+
+        bool intersect = object->CheckIntersection(ray, distToIntersect, norm, p);
+        if (intersect && distToIntersect < intersectionDistance) {
+            didHit = true;
+            intersectionDistance = distToIntersect;
+            intersectedObject = object;
+            pix = p;
+            intersectionNormal = norm;
+        }
+    }
+
+    return didHit;
 }
 
 // ugly json parsing methods

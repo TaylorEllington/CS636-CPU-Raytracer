@@ -69,5 +69,6 @@ public:
     void Run();
 
 private:
+    bool ShootRay(Ray ray, std::vector<Intersectable *> sceneObjects,  Intersectable *& intersectedObject, glm::vec3 & intersectionNormal, float & intersectionDistance, Pixel & pix);
     RayTracerSettings settings;
 };
