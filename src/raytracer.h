@@ -34,6 +34,10 @@ struct PrimitiveDesc {
     float radius;
 };
 
+struct Fragment {
+    glm::vec3 subsamples[25] = { {0.0, 0.0, 0.0} };
+};
+
 //init object for the whole scene
 struct RayTracerSettings {
     // setting up the window
@@ -69,6 +73,8 @@ public:
     void Run();
 
 private:
+    int SubfragmentRecurse(Fragment frag, int A, glm::vec3 imgPlaneA, int B, glm::vec3 imgPlaneB, int C, glm::vec3 imgPlaneC, int D, glm::vec3 imgPlaneD, glm::vec3 origin, std::vector<Intersectable*> sceneObjects, glm::vec3& outColor, bool skipTop, bool skipLeft, bool stop, float tolerance);
     bool ShootRay(Ray ray, std::vector<Intersectable *> sceneObjects,  Intersectable *& intersectedObject, glm::vec3 & intersectionNormal, float & intersectionDistance, Pixel & pix);
+    bool ShootAndShadePrimaryRay(Ray ray, std::vector<Intersectable*> sceneObjects, glm::vec3 & outColor);
     RayTracerSettings settings;
 };
