@@ -241,12 +241,13 @@ And then we can look at a sort of "heat map" of where in the image we had to gen
 
 The intresting, yet obvious conclusion we can draw is that the areas where more "is going on" in terms of overlapping objects or spectra changes from lights, causes more subsampiling.   
 
-##Other Scenes  
+## Other Scenes  
 
 Here are a few more images, reflective of non-aa vs supersampled images,  both of these are done with a tolerance of 0.001;
 
 ![Dragon - No AA](/cs636-advanced-rendering-techniques/images/HW_4/dragon.png)
-![Dragon - New AA](/cs636-advanced-rendering-techniques/images/HW_4/aa-dragon.png)  
+![Dragon - New AA](/cs636-advanced-rendering-techniques/images/HW_4/aa-dragon.png)
+
 | Primary Rays | Total Render Time |
 |-------------:|------------------:|
 |        422777|            1059ms |  
@@ -254,6 +255,7 @@ Here are a few more images, reflective of non-aa vs supersampled images,  both o
 
 ![Sphere and Toroid - No AA](/cs636-advanced-rendering-techniques/images/HW_4/solar-spheres-and-supertoroid.png)
 ![Sphere and Toroid](/cs636-advanced-rendering-techniques/images/HW_4/aa-solar-spheres-and-supertoroid.png)  
+
 | Primary Rays | Total Render Time |
 |-------------:|------------------:|
 |        596855|            864ms |  
