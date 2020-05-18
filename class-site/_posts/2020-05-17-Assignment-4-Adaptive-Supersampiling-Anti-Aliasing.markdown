@@ -31,35 +31,35 @@ std::unordered_map<std::pair<int, int>, Fragment, pair_hash> fragmentCache;
 Now armed with this cache, at each pixel we can check to see if we have processed the pixel above, and the pixel to the left of our current address, and recycle any samples we have taken along the shared borders. 
 
 {% highlight c++ %}
-            Fragment currFrag;
-            bool rayTraceTop = true;
-            bool rayTraceLeft = true;
+Fragment currFrag;
+bool rayTraceTop = true;
+bool rayTraceLeft = true;
 
-            //look for pixel above, reuse any sub samples on the shared border
-            if (fragmentCache.find(std::make_pair(hh, vv - 1)) != fragmentCache.end()) {
-                Fragment above = fragmentCache.at(std::make_pair(hh, vv - 1));
+//look for pixel above, reuse any sub samples on the shared border
+if (fragmentCache.find(std::make_pair(hh, vv - 1)) != fragmentCache.end()) {
+    Fragment above = fragmentCache.at(std::make_pair(hh, vv - 1));
 
-                currFrag.subsamples[0] = above.subsamples[20];
-                currFrag.subsamples[1] = above.subsamples[21];
-                currFrag.subsamples[2] = above.subsamples[22];
-                currFrag.subsamples[3] = above.subsamples[23];
-                currFrag.subsamples[4] = above.subsamples[24];
+    currFrag.subsamples[0] = above.subsamples[20];
+    currFrag.subsamples[1] = above.subsamples[21];
+    currFrag.subsamples[2] = above.subsamples[22];
+    currFrag.subsamples[3] = above.subsamples[23];
+    currFrag.subsamples[4] = above.subsamples[24];
 
-                rayTraceTop = false; // we dont need to re-shoot A - B
-            }
+    rayTraceTop = false; // we dont need to re-shoot A - B
+}
 
-            //look for pixel to the left, reuse any sub samples on the shared border
-            if (fragmentCache.find(std::make_pair(hh - 1, vv)) != fragmentCache.end()) {
-                Fragment left = fragmentCache.at(std::make_pair(hh - 1, vv));
+//look for pixel to the left, reuse any sub samples on the shared border
+if (fragmentCache.find(std::make_pair(hh - 1, vv)) != fragmentCache.end()) {
+    Fragment left = fragmentCache.at(std::make_pair(hh - 1, vv));
 
-                currFrag.subsamples[0] = left.subsamples[4];
-                currFrag.subsamples[5] = left.subsamples[9];
-                currFrag.subsamples[10] = left.subsamples[14];
-                currFrag.subsamples[15] = left.subsamples[19];
-                currFrag.subsamples[20] = left.subsamples[24];
+    currFrag.subsamples[0] = left.subsamples[4];
+    currFrag.subsamples[5] = left.subsamples[9];
+    currFrag.subsamples[10] = left.subsamples[14];
+    currFrag.subsamples[15] = left.subsamples[19];
+    currFrag.subsamples[20] = left.subsamples[24];
 
-                rayTraceLeft = false; // we dont need to re-shoot A - C
-            }
+    rayTraceLeft = false; // we dont need to re-shoot A - C
+}
 {% endhighlight %} 
 
 Then, we get the corners we still need, based on what we were not able to find in the cache. Since we will never have a right or lower pixel already solved, we assume that we will always need to shoot a ray at D. 
@@ -94,7 +94,8 @@ Finally, we check on the results of the rays we just shot and see if they are wi
 
 {% highlight c++ %}
 //check tolerances
-if (!FragmentInTolerance(currFrag.subsamples[0], currFrag.subsamples[4], currFrag.subsamples[20], currFrag.subsamples[24], tolerance)) {
+if (!FragmentInTolerance(currFrag.subsamples[0], currFrag.subsamples[4],
+     currFrag.subsamples[20], currFrag.subsamples[24], tolerance)) {
     //recurse into sub fragments
     raysThisPixel += SubfragmentRecurse(currFrag,0,imagePlaneCoordA,4, 
          imagePlaneCoordB,20, imagePlaneCoordC ,24, imagePlaneCoordD, 
@@ -102,7 +103,8 @@ if (!FragmentInTolerance(currFrag.subsamples[0], currFrag.subsamples[4], currFra
          false, tolerance);
 }
 else {
-    image[index] = (currFrag.subsamples[0] + currFrag.subsamples[4] + currFrag.subsamples[20] + currFrag.subsamples[24]) / 4;
+    image[index] = (currFrag.subsamples[0] + currFrag.subsamples[4] + 
+                  currFrag.subsamples[20] + currFrag.subsamples[24]) / 4;
 }
 
 fragmentCache.emplace(std::make_pair(hh, vv), currFrag); // cache this fragment for the next one
@@ -171,19 +173,23 @@ glm::vec3 lowerLeftColor = (s[C] + s[bottomIndex] + s[centerIndex] + s[leftIndex
 glm::vec3 lowerRightColor = (s[D] + s[bottomIndex] + s[centerIndex] + s[rightIndex])/4;
 
 if (!FragmentInTolerance(s[A], s[topIndex], s[centerIndex], s[leftIndex], tolerance) && !stop) {
-    shotRays += SubfragmentRecurse(frag, A, imgPlaneA, topIndex, topMid, leftIndex, leftMid, centerIndex, center, origin, sceneObjects, upperLeftColor, skipTop, skipLeft, true, tolerance);
+    shotRays += SubfragmentRecurse(frag, A, imgPlaneA, topIndex, topMid, leftIndex, leftMid, centerIndex, 
+    center, origin, sceneObjects, upperLeftColor, skipTop, skipLeft, true, tolerance);
 }
 
 if (!FragmentInTolerance(s[B], s[topIndex] , s[centerIndex] , s[rightIndex], tolerance) && !stop) {
-    shotRays += SubfragmentRecurse(frag, topIndex, topMid, B, imgPlaneB, centerIndex, center, rightIndex, rightMid, origin, sceneObjects, upperRightColor, skipTop, false, true, tolerance);
+    shotRays += SubfragmentRecurse(frag, topIndex, topMid, B, imgPlaneB, centerIndex, center, rightIndex, 
+    rightMid, origin, sceneObjects, upperRightColor, skipTop, false, true, tolerance);
 }
 
 if (!FragmentInTolerance(s[C] , s[bottomIndex] , s[centerIndex] , s[leftIndex], tolerance) && !stop) {
-    shotRays += SubfragmentRecurse(frag, leftIndex, leftMid, centerIndex, center, C, imgPlaneC, bottomIndex, bottomMid, origin, sceneObjects, lowerLeftColor, skipTop, skipLeft, true, tolerance);
+    shotRays += SubfragmentRecurse(frag, leftIndex, leftMid, centerIndex, center, C, imgPlaneC, bottomIndex, 
+    bottomMid, origin, sceneObjects, lowerLeftColor, skipTop, skipLeft, true, tolerance);
 }
 
 if (!FragmentInTolerance(s[D], s[bottomIndex] , s[centerIndex] , s[rightIndex], tolerance) && !stop) {
-    shotRays += SubfragmentRecurse(frag, centerIndex, center, rightIndex, rightMid, bottomIndex, bottomMid, D, imgPlaneD, origin, sceneObjects, lowerRightColor, true, true, true, tolerance);
+    shotRays += SubfragmentRecurse(frag, centerIndex, center, rightIndex, rightMid, bottomIndex, bottomMid, 
+    D, imgPlaneD, origin, sceneObjects, lowerRightColor, true, true, true, tolerance);
 }
 
 outColor = (upperLeftColor + upperRightColor + lowerLeftColor + lowerRightColor) / 4;
@@ -200,12 +206,13 @@ Lets look at one of our familiar scenes, in its raw, jagged glory.
 And now with our old HW2 Supersampling   
 ![misc spheres - old AA](/cs636-advanced-rendering-techniques/images/HW_4/ss-misc-models-and-spheres.png)
 
-And finally with the new Suffern super-sampiling with two levels of subdivision. 
+And finally with the new Suffern super-sampling with two levels of subdivision. 
 ![misc spheres - suffern](/cs636-advanced-rendering-techniques/images/HW_4/2lvl-misc-models-and-spheres.png)
 
-Lets do a side by side comparison of certain regions of the image, just so we can see whats going on
-![side by side](/cs636-advanced-rendering-techniques/images/HW_4/side-by-side-1.png)
-
+Lets do a side by side comparison of certain regions of the image, just so we can see whats going on. Spheres look almost identical, however in the no AA and old SS images you can see a bit of an extra ridge ontop of some of the spheres.
+![side by side1](/cs636-advanced-rendering-techniques/images/HW_4/side-by-side-1.png)
+looking at mesh edges gives a bit more variety
+![side by side2](/cs636-advanced-rendering-techniques/images/HW_4/side-by-side-2.png)
 The quality between our properly super-sampled images is comparable, both are a marked improvement over no AA at all.  Where things are different however, is in the work we had to do. 
 
 | AA Method              | Primary Rays | Total Render Time |
@@ -230,21 +237,21 @@ And then we can look at a sort of "heat map" of where in the image we had to gen
 ![Heatmap at 0.05](/cs636-advanced-rendering-techniques/images/HW_4/hm-0.050000-misc-models-and-spheres.png)
 ![Heatmap at 0.01](/cs636-advanced-rendering-techniques/images/HW_4/hm-0.010000-misc-models-and-spheres.png)
 ![Heatmap at 0.005](/cs636-advanced-rendering-techniques/images/HW_4/hm-0.005000-misc-models-and-spheres.png)
-![Heatmap at 0.001](/cs636-advanced-rendering-techniques/images/HW_4/hm-0.001000-misc-models-and-spheres.png)
+![Heatmap at 0.001](/cs636-advanced-rendering-techniques/images/HW_4/hm-0.001000-misc-models-and-spheres.png)  
 
-##Other Scenes
-Here are a few more images, reflective of non-aa vs supersampled images
+##Other Scenes  
+
+Here are a few more images, reflective of non-aa vs supersampled images,  both of these are done with a tolerance of 0.001;
 
 ![Dragon - No AA](/cs636-advanced-rendering-techniques/images/HW_4/dragon.png)
 ![Dragon - New AA](/cs636-advanced-rendering-techniques/images/HW_4/aa-dragon.png)
+| Primary Rays | Total Render Time |
+|-------------:|------------------:|
+|        422777|            1059ms |
 
-1059ms
-Raytracer - Ray Stats:
-    Primary Rays:       422777
 
 ![Sphere and Toroid - No AA](/cs636-advanced-rendering-techniques/images/HW_4/solar-spheres-and-supertoroid.png)
 ![Sphere and Toroid](/cs636-advanced-rendering-techniques/images/HW_4/aa-solar-spheres-and-supertoroid.png)
-
-Raytracer - Total time: 864ms
-Raytracer - Ray Stats:
-    Primary Rays:       596855
+| Primary Rays | Total Render Time |
+|-------------:|------------------:|
+|        596855|            864ms |
