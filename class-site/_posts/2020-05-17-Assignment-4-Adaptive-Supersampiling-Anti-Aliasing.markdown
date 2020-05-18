@@ -28,7 +28,7 @@ std::unordered_map<std::pair<int, int>, Fragment, pair_hash> fragmentCache;
 
 `pair_hash` is a hashing function so we can use the coordinate pairs as keys in an unordered map. Its implementation is on line 23 of `raytracer.cpp`
 
-Now armed with this cache, at each pixel we can check to see if we have processed the pixel above, and the pixel to the left of our current address, and recycle any samples we have taken along the shared borders. 
+Now armed with this cache, at each pixel we can check to see if we have processed the pixel above, and the pixel to the left of our current address, and recycle any samples we have taken along the shared borders, the following code is part of the main render loop starting at line 242 in `raytracer.cpp`. 
 
 {% highlight c++ %}
 Fragment currFrag;
