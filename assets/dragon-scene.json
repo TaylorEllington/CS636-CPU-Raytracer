@@ -4,7 +4,7 @@
     "height": 512,
     "debug": false,
     "background": [7, 54, 66],
-    "supersample": true
+    "supersample": false
   },
   "camera": {
     "position": [ 0, 0, 20 ],
@@ -38,7 +38,7 @@
           "position": [0,-5,0],
           "rotation": [0,50,0],
           "scale": [8,8,8],
-          "color"  : [ 7,41,77],
+          "color"  : [ 165,42,42],
           "diffuse": 0.4,
           "specular":0.6,
           "ambient" :0.6,

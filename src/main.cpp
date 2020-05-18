@@ -4,6 +4,8 @@
 #include "raytracer.h"
 #include "nlohmann/json.hpp"
 
+#include "CLI11.hpp"
+
 #include <fstream>
 
 RayTracerSettings parseSettingsJson(std::string filename) {
@@ -19,21 +21,23 @@ RayTracerSettings parseSettingsJson(std::string filename) {
     return settings;
 }
 
-void main(int argc, char** argv) {
+int main(int argc, char** argv) {
 
-    //read in any command line flags
-    //verify that the scene description exists
-    //instantiate the ray tracer
-    //draw the image
+    // Read in any command line flags 
+    CLI::App app{ "CS636 Ray Tracer" };
 
-    //RayTracerSettings init = parseSettingsJson("assets/models-and-spheres.json");
-    //RayTracerSettings init = parseSettingsJson("assets/single-supertoroid.json");
-    //RayTracerSettings init = parseSettingsJson("assets/spheres-scene.json");
-    //RayTracerSettings init = parseSettingsJson("assets/halo-ring-scene.json");
-    RayTracerSettings init = parseSettingsJson("assets/dragon-scene.json");
+    std::string filename = "default";
+    app.add_option("-f,--file", filename, "A help string");
+
+    CLI11_PARSE(app, argc, argv);
+
+
+    // Verify that the scene description exists
+    RayTracerSettings init = parseSettingsJson(filename);
     
-    //RayTracerSettings init = parseSettingsJson("assets/solarized-sphere-and-supertoroid-scene.json");
-    
+    // Instantiate the ray tracer
     RayTracer rt(init);
+    
+    // Draw the image
     rt.Run();
 }
