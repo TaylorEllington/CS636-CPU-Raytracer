@@ -50,9 +50,24 @@ bool FragmentInTolerance(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 D, flo
 RayTracer::RayTracer(RayTracerSettings init) :
     settings(init)
 {
+
+
+    for (SceneObjDesc desc : settings.meshSceneObjects) {
+        if (desc.type == "Sphere") {
+            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.color, desc.material));
+            continue;
+        }
+
+        if (desc.type == "Mesh") {
+            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.color, desc.material, desc.settings));
+            continue;
+        }
+
+    }
+
 }
 
-void PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectNorm, const Camera& camera, const Pixel& pix, const  std::vector<LightDesc>& lights, const float& globalAmbient) {
+void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectNorm, const Camera& camera, const Pixel& pix, const  std::vector<LightDesc>& lights, const float& globalAmbient) {
 
     //wipe out further back objects or background color
     pixel = glm::vec3(0.0, 0.0, 0.0);
@@ -62,6 +77,20 @@ void PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3& inters
 
     //phong shade diffuse and specular per each light
     for (auto& const light : lights) {
+
+        Intersectable* objectPtr = nullptr;
+        glm::vec3 intNormal;
+        float intDistance;
+        Pixel intPix;
+
+        
+
+        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectNorm * 0.00001);
+        float distToLight = glm::distance(light.position, shadowCheckPoint);
+        if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
+            continue;
+        }
+
 
         glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
 
@@ -162,23 +191,7 @@ void RayTracer::Run()
     std::vector<Pixel>& hmap = heatmap.getImage();
     std::vector<Pixel>& img = screen.getImage();
 
-    float tolerance = 0.01;
-
-    std::vector<Intersectable*> sceneObjects;
-
-    for (SceneObjDesc desc : settings.meshSceneObjects) {
-        if (desc.type == "Sphere") {
-            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.color, desc.material));
-            continue;
-        }
-
-        if (desc.type == "Mesh") {
-            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.color, desc.material, desc.settings));
-            continue;
-        }
-
-    }
-
+    float tolerance = 0.05;
 
     glm::vec3 viewSideDirection = glm::cross(glm::vec3(settings.camera.mViewDirection), glm::vec3(settings.camera.mViewUp)); //x_v
     glm::vec3 viewSideUp = glm::cross(viewSideDirection, glm::vec3(settings.camera.mViewDirection)); //y_v
@@ -420,6 +433,7 @@ bool RayTracer::ShootAndShadePrimaryRay(Ray ray, std::vector<Intersectable*> sce
     bool didIntersect = ShootRay(ray, sceneObjects, obj, normal, dist, pix);
     if (didIntersect) {
         glm::vec3 intersectionPoint = ray.mOrigin + ray.mNormRayVector * dist;
+
         PhongShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, pix, settings.lights, settings.mSceneAmbient);
     }
     return didIntersect;
@@ -430,10 +444,6 @@ void to_json(nlohmann::json& j, const RayTracerSettings& p) {}
 void from_json(const nlohmann::json& j, RayTracerSettings& s) {
     j.at("window").at("width").get_to(s.mWindowHeight);
     j.at("window").at("height").get_to(s.mWindowWidth);
-    j.at("window").at("debug").get_to(s.mWindowDebugMode);
-    j.at("window").at("supersample").get_to(s.mSupersample);
-    auto pix = j.at("window").at("background");
-    s.mBackgroundColor = { pix[0], pix[1] , pix[2] };
     j.at("outputFile").get_to(s.mOutputFileName);
     j.at("camera").get_to(s.camera);
     j.at("scene").at("intersectables").get_to(s.meshSceneObjects);
