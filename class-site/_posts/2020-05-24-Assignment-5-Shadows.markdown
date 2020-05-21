@@ -26,7 +26,8 @@ for (auto& const light : lights) {
     // Shadows
     glm::vec3 shadowCheckPoint = intersectionPoint + (intersectNorm);
     float distToLight = glm::distance(light.position, shadowCheckPoint);
-    if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
+    if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal,
+        intDistance, intPix) && intDistance < distToLight) {
         continue;
     }
 {% endhighlight %} 
@@ -34,19 +35,19 @@ for (auto& const light : lights) {
 Since we built `ShootRay` as a standalone function, we can reuse the same logic block that shoots our primary ray. True, we get back information that we don't use here, info about distance, intersection normal, and the color at the intersection, but we can simply ignore it.
 
 ## Images
-the [first scene]() we created was simple, just a light, a floor, a sphere at the origin,  and an object. This was the minimum needed to make sure that the feature was working. 
+the [first scene](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/0688b48249fbe072d4ebcdbac1f3e8d398c88648/assets/single-shadow-scene.json) we created was simple, just a light, a floor, a sphere at the origin,  and an object. This was the minimum needed to make sure that the feature was working. 
 
 ![Simple Shadow Scene](/cs636-advanced-rendering-techniques/images/HW_5/single-shadow.png)
 
 Render time - 1956ms
 
-Next, we made a scene that met the requirements for the assignment. Multiple meshes, spheres and lights. One of the meshes in this scene is a hollow ring. Positioned so that when viewed straight on it appears to be a solid, only when looking at the shadow does its true shape become apparent. 
+Next, we made a [scene](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/0688b48249fbe072d4ebcdbac1f3e8d398c88648/assets/complex-shadow-scene.json) that met the requirements for the assignment. Multiple meshes, spheres and lights. One of the meshes in this scene is a hollow ring. Positioned so that when viewed straight on it appears to be a solid, only when looking at the shadow does its true shape become apparent. 
 
 ![Complex Shadow Scene](/cs636-advanced-rendering-techniques/images/HW_5/complex-shadow.png)
 
 Render time - 2944ms
 
-Finally, we wanted to create something a little artsy. We first tried to generate something resembling a Warhol-esque image on a "canvas" instead of just shadows on the floor. Sadly, we couldn't quite get there, but one of the final attempts still looks pretty good! ( I had to modify the mesh file, the file contains a flat plane that the dragon is standing on. I removed this to get a good full silhouette)
+Finally, we wanted to create something a little artsy. We first tried to generate something resembling a Warhol-esque image on a "canvas" instead of just shadows on the floor. Sadly, we couldn't quite get there, but one of the [final attempts](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/0688b48249fbe072d4ebcdbac1f3e8d398c88648/assets/shadow-puppet-scene.json) still looks pretty good! ( I had to modify the mesh file, the file contains a flat plane that the dragon is standing on. I removed this to get a good full silhouette)
 
 ![Shadow Puppets Scene](/cs636-advanced-rendering-techniques/images/HW_5/shadow-puppets.png)
 
