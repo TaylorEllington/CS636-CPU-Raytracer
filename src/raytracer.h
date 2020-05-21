@@ -73,8 +73,12 @@ public:
     void Run();
 
 private:
+    
     int SubfragmentRecurse(Fragment frag, int A, glm::vec3 imgPlaneA, int B, glm::vec3 imgPlaneB, int C, glm::vec3 imgPlaneC, int D, glm::vec3 imgPlaneD, glm::vec3 origin, std::vector<Intersectable*> sceneObjects, glm::vec3& outColor, bool skipTop, bool skipLeft, bool stop, float tolerance);
     bool ShootRay(Ray ray, std::vector<Intersectable *> sceneObjects,  Intersectable *& intersectedObject, glm::vec3 & intersectionNormal, float & intersectionDistance, Pixel & pix);
+    void PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectNorm, const Camera& camera, const Pixel& pix, const  std::vector<LightDesc>& lights, const float& globalAmbient);
+
     bool ShootAndShadePrimaryRay(Ray ray, std::vector<Intersectable*> sceneObjects, glm::vec3 & outColor);
     RayTracerSettings settings;
+    std::vector<Intersectable*> sceneObjects;
 };

@@ -1,0 +1,139 @@
+{
+    "window": {
+        "width" : 1024,
+        "height": 1024,
+        "debug" : false 
+    },
+    "camera": {
+        "position": [ 0, 0, 20 ],
+        "up": [0, 1, 0 ],
+        "lookAtPoint": [0, 0, 0 ],
+        "viewPlaneDist": 1,
+        "hViewAngle": 56
+    },
+    "outputFile": "complex-shadow.png",
+    "scene": {
+        "ambient": 0.6,
+        "lights": [
+          {
+            "position": [0, 15, 0],
+            "intensity": 1,
+            "color": [190,190,190]
+          },
+          {
+            "position": [-5, 0, 20],
+            "intensity": 1,
+            "color": [150,80,75]
+          },
+          
+          {
+            "position": [6.25,-4.5,4],
+            "intensity": 1,
+            "color": [12, 150, 15]
+          }
+
+        ],
+        "intersectables":[
+            {
+              "_comment": "this is the platform under the scene",
+              "type": "Mesh",
+              "BVHmaxDepth" : 25 ,
+              "BVHtriThreshold" : 5,
+              "filename": "assets/cube.smf",
+              "position": [0,-5,-2],
+              "rotation": [15,0,0],
+              "scale": [15.0,0.5,15.0],
+              "color"  : [ 42, 161, 152],
+              "diffuse": 0.5,
+              "specular":0.9,
+              "ambient" :0.2,
+              "shinyness": 30
+            },
+            {
+              "_comment": "lumpy blob thing",
+              "type": "Mesh",
+              "BVHmaxDepth" : 25 ,
+              "BVHtriThreshold" : 5,
+              "filename": "assets/penny3.smf",
+              "position": [0, 0, 0],
+              "rotation": [15,0,0],
+              "scale": [0.25,0.25,0.25],
+              "color"  : [ 108, 113, 196],
+              "diffuse": 0.5,
+              "specular":0.9,
+              "ambient" :0.2,
+              "shinyness": 30
+            }, 
+            {
+              "type": "Mesh",
+              "BVHmaxDepth" : 25 ,
+              "BVHtriThreshold" : 5,
+              "filename": "assets/halo_ring_test.smf",
+              "position": [0,0,0],
+              "rotation": [0,0,0],
+              "scale": [0.8,0.8,0.8],
+              "color"  : [192,192,192],
+              "diffuse": 0.5,
+              "specular":0.9,
+              "ambient" :0.2,
+              "shinyness": 30
+          },
+          {
+              "type": "Mesh",
+              "BVHmaxDepth" : 25 ,
+              "BVHtriThreshold" : 5,
+              "filename": "assets/bunny-1000.smf",
+              "position": [6,-5.25,2.5],
+              "rotation": [0,20,0],
+              "scale": [1.5,1.5,1.5],
+              "color"  : [192,192,192],
+              "diffuse": 0.5,
+              "specular":0.9,
+              "ambient" :0.2,
+              "shinyness": 30
+          },
+          {
+          "type":"Sphere",
+          "position": [-1.5,-5.2,4],
+          "radius" : 0.25,
+          "color"  : [ 203,  75,  22],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1 ,
+          "shinyness": 30
+        },
+        {
+        "type":"Sphere",
+          "position": [-1,-5.75,4],
+          "radius" : 0.25,
+          "color"  : [ 133, 153,   10],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1 ,
+          "shinyness": 30
+        }, 
+                {
+        "type":"Sphere",
+          "position": [-1.5,-5.75,4],
+          "radius" : 0.25,
+          "color"  : [ 38 ,139, 210],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1 ,
+          "shinyness": 30
+        }, 
+                {
+        "type":"Sphere",
+          "position": [-2,-5.75,4],
+          "radius" : 0.25,
+          "color"  : [ 108, 113, 196],
+          "diffuse": 0.3,
+          "specular":0.6,
+          "ambient" :0.1 ,
+          "shinyness": 30
+        }
+
+
+        ]
+    }
+}
