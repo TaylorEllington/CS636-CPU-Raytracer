@@ -83,14 +83,12 @@ void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::v
         float intDistance;
         Pixel intPix;
 
-        
-
-        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectNorm * 0.00001);
+        // Shadows
+        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectNorm);
         float distToLight = glm::distance(light.position, shadowCheckPoint);
         if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
             continue;
         }
-
 
         glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
 
