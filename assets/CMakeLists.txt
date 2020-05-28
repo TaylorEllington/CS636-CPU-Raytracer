@@ -1,0 +1,15 @@
+add_custom_target(scene-jsons
+    SOURCES
+        basic-reflection-scene.json
+        complex-shadow-scene.json
+        cube-scene.json
+        dragon-scene.json
+        halo-ring-scene.json
+        models-and-spheres.json
+        shadow-puppet-scene.json
+        single-shadow-scene.json
+        single-supertoroid.json
+        solarized-sphere-and-supertoroid-scene.json
+        spheres-scene.json
+        supertoroid-scene.json
+)

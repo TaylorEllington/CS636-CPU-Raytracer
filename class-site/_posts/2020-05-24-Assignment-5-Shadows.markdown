@@ -32,10 +32,10 @@ for (auto& const light : lights) {
     }
 {% endhighlight %} 
 
-Since we built `ShootRay` as a standalone function, we can reuse the same logic block that shoots our primary ray. True, we get back information that we don't use here, info about distance, intersection normal, and the color at the intersection, but we can simply ignore it.
+Since we built `ShootRay` as a stand-alone function, we can reuse the same logic block that shoots our primary ray. True, we get back information that we don't use here, the intersection normal, and the color at the intersection, but we can simply ignore it.
 
 ## Images
-the [first scene](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/0688b48249fbe072d4ebcdbac1f3e8d398c88648/assets/single-shadow-scene.json) we created was simple, just a light, a floor, a sphere at the origin,  and an object. This was the minimum needed to make sure that the feature was working. 
+The [first scene](https://gitlab.com/TaylorEllington/cs636-advanced-rendering-techniques/-/blob/0688b48249fbe072d4ebcdbac1f3e8d398c88648/assets/single-shadow-scene.json) we created was simple, just a light, a floor, a sphere at the origin,  and an object. This was the minimum needed to make sure that the feature was working. 
 
 ![Simple Shadow Scene](/cs636-advanced-rendering-techniques/images/HW_5/single-shadow.png)
 
