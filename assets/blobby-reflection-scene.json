@@ -11,7 +11,7 @@
         "up": [ 0, 1, 0 ],
         "viewPlaneDist": 1
     },
-    "outputFile": "basic-reflection.png",
+    "outputFile": "blobby-reflection.png",
     "scene": {
         "ambient": 0.6,
         "lights": [
@@ -23,7 +23,7 @@
             {
                 "color": [ 190, 190, 190 ],
                 "intensity": 1,
-                "position": [ 0, 15, 0]
+                "position": [ 0, 15, 0 ]
             }
         ],
 
@@ -42,7 +42,7 @@
                 "diffuse": 0.5,
                 "specular": 0.5,
                 "ambient": 0.2,
-                "reflection":  0,
+                "reflection": 0,
                 "shinyness": 30
             },
             {
@@ -51,7 +51,7 @@
                 "BVHmaxDepth": 25,
                 "BVHtriThreshold": 5,
                 "filename": "assets/cube.smf",
-                "position": [6, 2, 2 ],
+                "position": [ 6, 2, 2 ],
                 "rotation": [ 0, 60, 0 ],
                 "scale": [ 10.0, 10.0, 0.5 ],
                 "colorDif": [ 200, 20, 65 ],
@@ -62,12 +62,15 @@
                 "reflection": 0,
                 "shinyness": 30
             },
-
             {
-                "_comment": " sphere",
-                "type": "Sphere",
-                "position": [ 0, 2, -1 ],
-                "radius": 2,
+                "_comment": " blobby",
+                "type": "Mesh",
+                "BVHmaxDepth": 25,
+                "BVHtriThreshold": 5,
+                "filename": "assets/penny3.smf",
+                "position": [ 0, 2, -2 ],
+                "rotation": [ 0, 45, 0 ],
+                "scale": [ 0.40, 0.40, 0.40 ],
                 "colorDif": [ 196, 202, 206 ],
                 "colorSpec": [ 196, 202, 206 ],
                 "diffuse": 0.2,

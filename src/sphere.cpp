@@ -5,8 +5,8 @@
 #include <iostream>
 
 
-Sphere::Sphere(glm::vec4 position, float radius, Pixel color, Material mat):
-    pos(position), r(radius), mColor(color), mMaterial(mat)
+Sphere::Sphere(glm::vec4 position, float radius, Material mat):
+    pos(position), r(radius), mMaterial(mat)
 {
     std::cout << "Sphere - Set up sphere at: [" << pos.x << ", " << pos.y << ", " << pos.z << "] with radius: "<< radius << std::endl;
 }

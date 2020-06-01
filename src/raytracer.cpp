@@ -6,7 +6,7 @@
 #include "ray.h"
 #include "material.h"
 
-#include<algorithm>
+#include <algorithm>
 #include <math.h>  // tan, cos
 #include <limits>  // 
 #include <chrono> 
@@ -14,6 +14,7 @@
 #include "gtc/constants.hpp"  //pi half_pi
 #include "gtx/scalar_multiplication.hpp"
 #include "gtx/hash.hpp"
+#include "gtx/component_wise.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "ext.hpp"
@@ -36,16 +37,13 @@ Ray BuildRay(glm::vec3 origin, glm::vec3 target) {
     return { origin, normDirection };
 }
 
-
-
 bool WithinTolerance(glm::vec3 c1, glm::vec3 c2, float tolerance) {
     return (std::abs(c1.r - c2.r) < tolerance) && (std::abs(c1.g - c2.g) < tolerance) && (std::abs(c1.b - c2.b) < tolerance);
 }
 
 bool FragmentInTolerance(glm::vec3 A, glm::vec3 B, glm::vec3 C, glm::vec3 D, float tolerance) {
-   return ( WithinTolerance(A, B, tolerance) && WithinTolerance(A, C, tolerance) && WithinTolerance(D, B, tolerance) && WithinTolerance(D, C, tolerance));
+    return (WithinTolerance(A, B, tolerance) && WithinTolerance(A, C, tolerance) && WithinTolerance(D, B, tolerance) && WithinTolerance(D, C, tolerance));
 }
-
 
 RayTracer::RayTracer(RayTracerSettings init) :
     settings(init)
@@ -54,16 +52,166 @@ RayTracer::RayTracer(RayTracerSettings init) :
 
     for (SceneObjDesc desc : settings.meshSceneObjects) {
         if (desc.type == "Sphere") {
-            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.color, desc.material));
+            sceneObjects.push_back(new Sphere(desc.position, desc.radius, desc.material));
             continue;
         }
 
         if (desc.type == "Mesh") {
-            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.color, desc.material, desc.settings));
+            sceneObjects.push_back(new Mesh(desc.position, desc.scale, desc.rotate, desc.filename, desc.material, desc.settings));
             continue;
         }
 
     }
+
+}
+
+glm::vec3 HallDiffuse(const float diffuse, const glm::vec3 diffuseColor, const LightDesc& light, glm::vec3 normal, glm::vec3 intersectionPoint) {
+    glm::vec3 color = { 0.0, 0.0, 0.0 };
+
+
+    glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
+    float diffuseTheta = std::max(glm::dot(normal, toLight), 0.0f);
+
+    color.r += std::min(light.color.r * diffuseColor.r * diffuseTheta, 1.0f);
+    color.g += std::min(light.color.g * diffuseColor.g * diffuseTheta, 1.0f);
+    color.b += std::min(light.color.b * diffuseColor.b * diffuseTheta, 1.0f);
+
+    color *= diffuse;
+
+    return color;
+}
+
+glm::vec3 HallSpecular(const float specular, const float shinyness, const glm::vec3 specularColor, const LightDesc& light, glm::vec3 normal, glm::vec3 intersectionPoint, const Camera& camera) {
+    glm::vec3 color = { 0.0, 0.0, 0.0 };
+
+    glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
+    glm::vec3 toEye = glm::normalize(glm::vec3(camera.mPosition) - intersectionPoint);
+
+    glm::vec3 half = glm::normalize(toLight + toEye);
+
+    float specularTheta = glm::dot(half, normal);
+
+    float specularThetaToTheN = std::pow(specularTheta, shinyness);
+
+    color.r += std::min(light.color.r * specularColor.r * specularThetaToTheN, 1.0f);
+    color.g += std::min(light.color.g * specularColor.g * specularThetaToTheN, 1.0f);
+    color.b += std::min(light.color.b * specularColor.b * specularThetaToTheN, 1.0f);
+
+
+    color *= specular;
+    return color;
+}
+
+glm::vec3 RayTracer::HallReflection(const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectionNorm, const glm::vec3& previousIntersection, const Camera& camera, const std::vector<LightDesc>& lights, const float& globalAmbient, glm::vec3 previousAmbient, int depth) {
+
+    if (depth >= 20) {
+        return previousAmbient;
+    }
+
+    glm::vec3 pixel = glm::vec3(0.0, 0.0, 0.0);
+
+    // Calculate ambient
+    glm::vec3 amb = mat.mAmbient * globalAmbient * mat.mSpecularColor;
+
+    // Calcuate reflection
+    glm::vec3 ref = glm::vec3(0.0, 0.0, 0.0);
+    glm::vec3 toPrevious = intersectionPoint - previousIntersection;
+    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm);
+    glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
+
+
+    Intersectable* objectPtr = nullptr;
+    glm::vec3 intNormal;
+    float intDistance;
+    Pixel intPix;
+
+    if (ShootRay(BuildRay(reflectionOrigin, reflectionVec), sceneObjects, objectPtr, intNormal, intDistance, intPix)) {
+        glm::vec3 intPoint = reflectionOrigin + reflectionVec * intDistance;
+        if (objectPtr->getMaterial().mShinyness == 0) {
+            return objectPtr->getMaterial().mDiffuseColor;
+        }
+
+        ref = HallReflection(objectPtr->getMaterial(), intPoint, intNormal, intersectionPoint, camera, lights, globalAmbient, amb, depth + 1);
+
+
+    }
+
+    ref = ref * mat.mReflection * mat.mSpecularColor;
+    //finally specular, diffuse
+
+    glm::vec3 dif = { 0.0, 0.0, 0.0 };
+    glm::vec3 spec = { 0.0, 0.0, 0.0 };
+
+    for (LightDesc light : lights) {
+        Intersectable* objectPtr = nullptr;
+        glm::vec3 intNormal;
+        float intDistance;
+        Pixel intPix;
+
+        // Account for Shadows
+        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectionNorm * 1e-4);
+        float distToLight = glm::distance(light.position, shadowCheckPoint);
+        if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
+            continue;
+        }
+
+        dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint);
+        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, camera);
+    }
+
+    pixel = dif + spec + amb + ref;
+
+    return pixel;
+}
+void RayTracer::HallShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectionNorm, const Camera& camera, const std::vector<LightDesc>& lights, const float& globalAmbient) {
+    //reset pixel to black, working with a "blank" canvas
+    pixel = glm::vec3(0.0, 0.0, 0.0);
+
+    //now calculate ambient
+    glm::vec3 amb = mat.mAmbient * globalAmbient * mat.mSpecularColor;
+
+    //Calcuate reflection first
+    glm::vec3 ref = { 0.0,0.0,0.0 };
+    glm::vec3 toPrevious = intersectionPoint - glm::vec3(camera.mPosition);
+    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm);
+    glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
+
+
+    Intersectable* objectPtr = nullptr;
+    glm::vec3 intNormal;
+    float intDistance;
+    Pixel intPix;
+
+    if (ShootRay(BuildRay(reflectionOrigin, reflectionVec), sceneObjects, objectPtr, intNormal, intDistance, intPix)) {
+
+        glm::vec3 intPoint = reflectionOrigin + reflectionVec * intDistance;
+        ref = HallReflection(objectPtr->getMaterial(), intPoint, intNormal, reflectionOrigin, camera, lights, globalAmbient, amb, 0);
+    }
+    ref = ref * mat.mReflection * mat.mSpecularColor;
+
+    //finally specular, diffuse
+    glm::vec3 dif = { 0.0, 0.0, 0.0 };
+    glm::vec3 spec = { 0.0, 0.0, 0.0 };
+
+    for (LightDesc light : lights) {
+        Intersectable* objectPtr = nullptr;
+        glm::vec3 intNormal;
+        float intDistance;
+        Pixel intPix;
+
+        // Account for Shadows
+        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectionNorm * 1e-4);
+        float distToLight = glm::distance(light.position, shadowCheckPoint);
+        if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
+            continue;
+        }
+
+        dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint);
+        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, camera);
+    }
+
+    pixel = dif + spec + amb + ref;
+    //pixel = ref;
 
 }
 
@@ -73,7 +221,7 @@ void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::v
     pixel = glm::vec3(0.0, 0.0, 0.0);
 
     //put colors into a normalized space
-    glm::vec3 matColor = { pix.red / 255.0, pix.green / 255.0, pix.blue / 255.0 };
+    glm::vec3 matColor = mat.mDiffuseColor;
 
     //phong shade diffuse and specular per each light
     for (auto& const light : lights) {
@@ -90,7 +238,7 @@ void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::v
             continue;
         }
 
-        glm::vec3 lightColor = { light.color.red / 255.0, light.color.green / 255.0, light.color.blue / 255.0 };
+        glm::vec3 lightColor = light.color;
 
         glm::vec3 toLight = glm::normalize(light.position - intersectionPoint);
         glm::vec3 toEye = glm::normalize(glm::vec3(camera.mPosition) - intersectionPoint);
@@ -121,7 +269,7 @@ void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::v
     pixel.b += matColor.b * sceneAmbient;
 }
 
-int RayTracer::SubfragmentRecurse(Fragment frag, int A, glm::vec3 imgPlaneA, int B, glm::vec3 imgPlaneB, int C, glm::vec3 imgPlaneC, int D, glm::vec3 imgPlaneD, glm::vec3 origin , std::vector<Intersectable*> sceneObjects, glm::vec3& outColor, bool skipTop, bool skipLeft, bool stop, float tolerance) {
+int RayTracer::SubfragmentRecurse(Fragment frag, int A, glm::vec3 imgPlaneA, int B, glm::vec3 imgPlaneB, int C, glm::vec3 imgPlaneC, int D, glm::vec3 imgPlaneD, glm::vec3 origin, std::vector<Intersectable*> sceneObjects, glm::vec3& outColor, bool skipTop, bool skipLeft, bool stop, float tolerance) {
     int shotRays = 0;
     //compute midpoints along edges, and dead center
     glm::vec3 topMid = (imgPlaneA + imgPlaneB) / 2;
@@ -157,24 +305,24 @@ int RayTracer::SubfragmentRecurse(Fragment frag, int A, glm::vec3 imgPlaneA, int
 
     auto s = frag.subsamples;
 
-    glm::vec3 upperLeftColor = (s[A] + s[topIndex] + s[centerIndex] + s[leftIndex]) /4;
-    glm::vec3 upperRightColor = (s[B] + s[topIndex] + s[centerIndex] + s[rightIndex])/4;
-    glm::vec3 lowerLeftColor = (s[C] + s[bottomIndex] + s[centerIndex] + s[leftIndex])/4;
-    glm::vec3 lowerRightColor = (s[D] + s[bottomIndex] + s[centerIndex] + s[rightIndex])/4;
+    glm::vec3 upperLeftColor = (s[A] + s[topIndex] + s[centerIndex] + s[leftIndex]) / 4;
+    glm::vec3 upperRightColor = (s[B] + s[topIndex] + s[centerIndex] + s[rightIndex]) / 4;
+    glm::vec3 lowerLeftColor = (s[C] + s[bottomIndex] + s[centerIndex] + s[leftIndex]) / 4;
+    glm::vec3 lowerRightColor = (s[D] + s[bottomIndex] + s[centerIndex] + s[rightIndex]) / 4;
 
     if (!FragmentInTolerance(s[A], s[topIndex], s[centerIndex], s[leftIndex], tolerance) && !stop) {
         shotRays += SubfragmentRecurse(frag, A, imgPlaneA, topIndex, topMid, leftIndex, leftMid, centerIndex, center, origin, sceneObjects, upperLeftColor, skipTop, skipLeft, true, tolerance);
     }
 
-    if (!FragmentInTolerance(s[B], s[topIndex] , s[centerIndex] , s[rightIndex], tolerance) && !stop) {
+    if (!FragmentInTolerance(s[B], s[topIndex], s[centerIndex], s[rightIndex], tolerance) && !stop) {
         shotRays += SubfragmentRecurse(frag, topIndex, topMid, B, imgPlaneB, centerIndex, center, rightIndex, rightMid, origin, sceneObjects, upperRightColor, skipTop, false, true, tolerance);
     }
 
-    if (!FragmentInTolerance(s[C] , s[bottomIndex] , s[centerIndex] , s[leftIndex], tolerance) && !stop) {
+    if (!FragmentInTolerance(s[C], s[bottomIndex], s[centerIndex], s[leftIndex], tolerance) && !stop) {
         shotRays += SubfragmentRecurse(frag, leftIndex, leftMid, centerIndex, center, C, imgPlaneC, bottomIndex, bottomMid, origin, sceneObjects, lowerLeftColor, skipTop, skipLeft, true, tolerance);
     }
 
-    if (!FragmentInTolerance(s[D], s[bottomIndex] , s[centerIndex] , s[rightIndex], tolerance) && !stop) {
+    if (!FragmentInTolerance(s[D], s[bottomIndex], s[centerIndex], s[rightIndex], tolerance) && !stop) {
         shotRays += SubfragmentRecurse(frag, centerIndex, center, rightIndex, rightMid, bottomIndex, bottomMid, D, imgPlaneD, origin, sceneObjects, lowerRightColor, true, true, true, tolerance);
     }
 
@@ -235,7 +383,7 @@ void RayTracer::Run()
     int progressDelta = (height * width) / 10;
     int progressGoal = progressDelta;
     size_t primaryRayCounter = 0;
-   
+
     std::vector<glm::vec3> image(height * width);
     glm::vec3 origin = settings.camera.mPosition;
     std::vector<size_t> perPixelRayCount(height * width);
@@ -328,11 +476,11 @@ void RayTracer::Run()
             ++raysThisPixel;
 
 
-           
+
             //check tolerances
             if (!FragmentInTolerance(currFrag.subsamples[0], currFrag.subsamples[4], currFrag.subsamples[20], currFrag.subsamples[24], tolerance)) {
                 //recurse into sub fragments
-                raysThisPixel += SubfragmentRecurse(currFrag,0,imagePlaneCoordA,4, imagePlaneCoordB,20, imagePlaneCoordC ,24, imagePlaneCoordD, origin,sceneObjects, image[index], rayTraceTop, rayTraceLeft, false, tolerance);
+                raysThisPixel += SubfragmentRecurse(currFrag, 0, imagePlaneCoordA, 4, imagePlaneCoordB, 20, imagePlaneCoordC, 24, imagePlaneCoordD, origin, sceneObjects, image[index], rayTraceTop, rayTraceLeft, false, tolerance);
             }
             else {
                 image[index] = (currFrag.subsamples[0] + currFrag.subsamples[4] + currFrag.subsamples[20] + currFrag.subsamples[24]) / 4;
@@ -358,7 +506,7 @@ void RayTracer::Run()
     glm::vec3 maxColor = { 1.0,1.0,1.0 };
     for (int ii = 0; ii < image.size(); ii++) {
 
-        hmap[ii].red = perPixelRayCount[ii] /(float)maxRaysPerPixel * 255.0f;
+        hmap[ii].red = perPixelRayCount[ii] / (float)maxRaysPerPixel * 255.0f;
         hmap[ii].green = (perPixelRayCount[ii]) / (float)maxRaysPerPixel * 255.0f;
         hmap[ii].blue = (perPixelRayCount[ii]) / (float)maxRaysPerPixel * 255.0f;
 
@@ -392,7 +540,7 @@ void RayTracer::Run()
 
 
     std::string filename = settings.mOutputFileName;
-    heatmap.PrintImage("hm-" + std::to_string(tolerance)+ "-" + filename);
+    heatmap.PrintImage("hm-" + std::to_string(tolerance) + "-" + filename);
     screen.PrintImage(filename);
 }
 
@@ -432,7 +580,8 @@ bool RayTracer::ShootAndShadePrimaryRay(Ray ray, std::vector<Intersectable*> sce
     if (didIntersect) {
         glm::vec3 intersectionPoint = ray.mOrigin + ray.mNormRayVector * dist;
 
-        PhongShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, pix, settings.lights, settings.mSceneAmbient);
+        //PhongShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, pix, settings.lights, settings.mSceneAmbient);
+        HallShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, settings.lights, settings.mSceneAmbient);
     }
     return didIntersect;
 }
@@ -457,9 +606,19 @@ void from_json(const nlohmann::json& j, SceneObjDesc& m) {
     auto pos = j.at("position");
     m.position = glm::vec4(pos[0], pos[1], pos[2], 1.0); //point
     if (j.count("color") != 0) {
-        auto pix = j.at("color");
-        m.color = { pix[0], pix[1] , pix[2] };
+        throw std::runtime_error("Update your scene to use diffuse and specular colors!!!!!");
     }
+
+    if (j.count("colorSpec") != 0) {
+        auto spec = j.at("colorSpec");
+        m.material.mSpecularColor = glm::vec3(spec[0] / 255.0f, spec[1] / 255.0f, spec[2] / 255.0f);
+    }
+
+    if (j.count("colorDif") != 0) {
+        auto dif = j.at("colorDif");
+        m.material.mDiffuseColor = glm::vec3(dif[0] / 255.0f, dif[1] / 255.0f, dif[2] / 255.0f);
+    }
+
 
     if (j.count("diffuse") != 0) {
         j.at("diffuse").get_to(m.material.mDiffuse);
@@ -471,6 +630,10 @@ void from_json(const nlohmann::json& j, SceneObjDesc& m) {
 
     if (j.count("ambient") != 0) {
         j.at("ambient").get_to(m.material.mAmbient);
+    }
+
+    if (j.count("reflection") != 0) {
+        j.at("reflection").get_to(m.material.mReflection);
     }
 
     j.at("shinyness").get_to(m.material.mShinyness);
@@ -510,5 +673,5 @@ void from_json(const nlohmann::json& j, LightDesc& l) {
     j.at("intensity").get_to(l.intensity);
 
     auto c = j.at("color");
-    l.color = { c[0], c[1], c[2] };
+    l.color = { c[0] / 255.0f, c[1] / 255.0f, c[2] / 255.0f };
 }

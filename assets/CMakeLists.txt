@@ -1,6 +1,7 @@
 add_custom_target(scene-jsons
     SOURCES
         basic-reflection-scene.json
+        blobby-reflection-scene.json
         complex-shadow-scene.json
         cube-scene.json
         dragon-scene.json

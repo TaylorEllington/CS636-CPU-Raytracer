@@ -71,8 +71,8 @@ glm::mat4 BulidTransform(glm::vec4 pos, Scale scale, Rotate rotate) {
 
 
 
-Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename, Pixel color, Material mat, BVHSettings settings) :
-    mMaterial(mat), mColor(color)
+Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename, Material mat, BVHSettings settings) :
+    mMaterial(mat)
 {
     glm::mat4 translateMat = TranslateTo(glm::vec4(0, 0, 0, 0), position);
     glm::mat4 rotateMat = RotateZ(rotate.rotDegZ) * RotateY(rotate.rotDegY) * RotateX(rotate.rotDegX);
@@ -82,7 +82,7 @@ Mesh::Mesh(glm::vec4 position, Scale scale, Rotate rotate, std::string filename,
     file.open(filename);
 
     if (!file) {
-        throw std::runtime_error("File: " + filename + " does not exist! ");
+        throw std::runtime_error("Mesh File: " + filename + " does not exist! ");
     }
     //dummy vert to maintain 1 -indexing 
     vertices.push_back(Vertex({ 0, 0, 0, 1.0 }));

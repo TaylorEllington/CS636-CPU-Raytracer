@@ -4,7 +4,7 @@
 
 class Sphere : public Intersectable {
 public:
-    Sphere(glm::vec4 position, float radius, Pixel color, Material mat);
+    Sphere(glm::vec4 position, float radius, Material mat);
     bool CheckIntersection(const Ray & ray,  float& distance, glm::vec3& normAtIntersection, Pixel& pix) override;
     Material getMaterial() override;
 
