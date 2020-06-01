@@ -136,7 +136,8 @@ glm::vec3 RayTracer::HallReflection(const Material& mat, const glm::vec3& inters
     // Calcuate reflection
     glm::vec3 ref = glm::vec3(0.0, 0.0, 0.0);
     glm::vec3 toPrevious = intersectionPoint - previousIntersection;
-    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm);
+    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) 
+                               * intersectionNorm);
     glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
 
 
@@ -181,7 +182,8 @@ glm::vec3 RayTracer::HallReflection(const Material& mat, const glm::vec3& inters
         }
 
         dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint);
-        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, camera);
+        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm,
+                      intersectionPoint, camera);
     }
 
     pixel = dif + spec + amb + ref;
