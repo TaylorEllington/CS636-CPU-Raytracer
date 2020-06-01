@@ -20,7 +20,7 @@ struct BVHSettings {
 
 class Mesh : public Intersectable {
 public:
-    Mesh(glm::vec4 position, Scale scale, Rotate rotate,  std::string filename, Pixel color, Material mat, BVHSettings settings);
+    Mesh(glm::vec4 position, Scale scale, Rotate rotate,  std::string filename, Material mat, BVHSettings settings);
 
     bool CheckIntersection(const Ray& ray, float& distance, glm::vec3 & normAtIntersection, Pixel& pix) override;
     Material getMaterial() override;

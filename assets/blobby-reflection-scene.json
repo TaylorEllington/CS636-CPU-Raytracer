@@ -1,0 +1,84 @@
+{
+    "window": {
+        "debug": false,
+        "height": 1024,
+        "width": 1024
+    },
+    "camera": {
+        "hViewAngle": 56,
+        "lookAtPoint": [ 0, 0, 0 ],
+        "position": [ 0, 0, 13 ],
+        "up": [ 0, 1, 0 ],
+        "viewPlaneDist": 1
+    },
+    "outputFile": "blobby-reflection.png",
+    "scene": {
+        "ambient": 0.6,
+        "lights": [
+            {
+                "color": [ 190, 190, 190 ],
+                "intensity": 1,
+                "position": [ 1, 0, -20 ]
+            },
+            {
+                "color": [ 190, 190, 190 ],
+                "intensity": 1,
+                "position": [ 0, 15, 0 ]
+            }
+        ],
+
+        "intersectables": [
+            {
+                "_comment": "this is the platform under the scene",
+                "type": "Mesh",
+                "BVHmaxDepth": 25,
+                "BVHtriThreshold": 5,
+                "filename": "assets/cube.smf",
+                "position": [ 0, -4, 0 ],
+                "rotation": [ 0, 0, 0 ],
+                "scale": [ 15.0, 0.5, 15.0 ],
+                "colorDif": [ 42, 161, 152 ],
+                "colorSpec": [ 42, 161, 152 ],
+                "diffuse": 0.5,
+                "specular": 0.5,
+                "ambient": 0.2,
+                "reflection": 0,
+                "shinyness": 30
+            },
+            {
+                "_comment": "mirror",
+                "type": "Mesh",
+                "BVHmaxDepth": 25,
+                "BVHtriThreshold": 5,
+                "filename": "assets/cube.smf",
+                "position": [ 6, 2, 2 ],
+                "rotation": [ 0, 60, 0 ],
+                "scale": [ 10.0, 10.0, 0.5 ],
+                "colorDif": [ 200, 20, 65 ],
+                "colorSpec": [ 200, 20, 65 ],
+                "diffuse": 0.5,
+                "specular": 0.5,
+                "ambient": 0.1,
+                "reflection": 0,
+                "shinyness": 30
+            },
+            {
+                "_comment": " blobby",
+                "type": "Mesh",
+                "BVHmaxDepth": 25,
+                "BVHtriThreshold": 5,
+                "filename": "assets/penny3.smf",
+                "position": [ 0, 2, -2 ],
+                "rotation": [ 0, 45, 0 ],
+                "scale": [ 0.40, 0.40, 0.40 ],
+                "colorDif": [ 196, 202, 206 ],
+                "colorSpec": [ 196, 202, 206 ],
+                "diffuse": 0.2,
+                "specular": 0.8,
+                "ambient": 0.01,
+                "reflection": 1,
+                "shinyness": 200
+            }
+        ]
+    }
+}
