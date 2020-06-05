@@ -102,98 +102,26 @@ glm::vec3 HallSpecular(const float specular, const float shinyness, const glm::v
     return color;
 }
 
-glm::vec3 RayTracer::HallReflection(const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectionNorm, const glm::vec3& previousIntersection, const Camera& camera, const std::vector<LightDesc>& lights, const float& globalAmbient, glm::vec3 previousAmbient, int depth) {
-
-    if (depth >= 20) {
-        return previousAmbient;
+void RayTracer::HallShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectionNorm, const glm::vec3 & previousIntersection, size_t recursionDepth = 0, const glm::vec3 & previousAmb = {0.0, 0.0, 0.0}) {
+    if (recursionDepth >= 5) {
+        pixel = previousAmb;
+        return;
     }
-
-    glm::vec3 pixel = glm::vec3(0.0, 0.0, 0.0);
-
-    // Calculate ambient
-    glm::vec3 amb = mat.mAmbient * globalAmbient * mat.mSpecularColor;
-
-    // Calcuate reflection
-    glm::vec3 ref = glm::vec3(0.0, 0.0, 0.0);
-    glm::vec3 toPrevious = intersectionPoint - previousIntersection;
-    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm);
-    glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
-
-
-    Intersectable* objectPtr = nullptr;
-    glm::vec3 intNormal;
-    float intDistance;
-    Pixel intPix;
-
-    if (ShootRay(BuildRay(reflectionOrigin, reflectionVec), sceneObjects, objectPtr, intNormal, intDistance, intPix)) {
-        glm::vec3 intPoint = reflectionOrigin + reflectionVec * intDistance;
-        if (objectPtr->getMaterial().mShinyness == 0) {
-            return objectPtr->getMaterial().mDiffuseColor;
-        }
-
-        ref = HallReflection(objectPtr->getMaterial(), intPoint, intNormal, intersectionPoint, camera, lights, globalAmbient, amb, depth + 1);
-
-
-    }
-
-    ref = ref * mat.mReflection * mat.mSpecularColor;
-    //finally specular, diffuse
-
-    glm::vec3 dif = { 0.0, 0.0, 0.0 };
-    glm::vec3 spec = { 0.0, 0.0, 0.0 };
-
-    for (LightDesc light : lights) {
-        Intersectable* objectPtr = nullptr;
-        glm::vec3 intNormal;
-        float intDistance;
-        Pixel intPix;
-
-        // Account for Shadows
-        glm::vec3 shadowCheckPoint = intersectionPoint + (intersectionNorm * 1e-4);
-        float distToLight = glm::distance(light.position, shadowCheckPoint);
-        if (ShootRay(BuildRay(shadowCheckPoint, light.position), sceneObjects, objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
-            continue;
-        }
-
-        dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint);
-        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, camera);
-    }
-
-    pixel = dif + spec + amb + ref;
-
-    return pixel;
-}
-void RayTracer::HallShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectionNorm, const Camera& camera, const std::vector<LightDesc>& lights, const float& globalAmbient) {
+    
     //reset pixel to black, working with a "blank" canvas
     pixel = glm::vec3(0.0, 0.0, 0.0);
 
     //now calculate ambient
-    glm::vec3 amb = mat.mAmbient * globalAmbient * mat.mSpecularColor;
+    glm::vec3 amb = mat.mAmbient * settings.mSceneAmbient * mat.mSpecularColor;
 
-    //Calcuate reflection first
-    glm::vec3 ref = { 0.0,0.0,0.0 };
-    glm::vec3 toPrevious = intersectionPoint - glm::vec3(camera.mPosition);
-    glm::vec3 reflectionVec = toPrevious - ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm);
-    glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
-
-
-    Intersectable* objectPtr = nullptr;
-    glm::vec3 intNormal;
-    float intDistance;
-    Pixel intPix;
-
-    if (ShootRay(BuildRay(reflectionOrigin, reflectionVec), sceneObjects, objectPtr, intNormal, intDistance, intPix)) {
-
-        glm::vec3 intPoint = reflectionOrigin + reflectionVec * intDistance;
-        ref = HallReflection(objectPtr->getMaterial(), intPoint, intNormal, reflectionOrigin, camera, lights, globalAmbient, amb, 0);
-    }
-    ref = ref * mat.mReflection * mat.mSpecularColor;
+    
+    
 
     //finally specular, diffuse
     glm::vec3 dif = { 0.0, 0.0, 0.0 };
     glm::vec3 spec = { 0.0, 0.0, 0.0 };
 
-    for (LightDesc light : lights) {
+    for (LightDesc light : settings.lights) {
         Intersectable* objectPtr = nullptr;
         glm::vec3 intNormal;
         float intDistance;
@@ -207,12 +135,32 @@ void RayTracer::HallShading(glm::vec3& pixel, const Material& mat, const glm::ve
         }
 
         dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint);
-        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, camera);
+        spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, settings.camera);
     }
 
-    pixel = dif + spec + amb + ref;
-    //pixel = ref;
+    //Calcuate reflection
+    glm::vec3 ref = { 0.0,0.0,0.0 };
+    glm::vec3 viewRay = intersectionPoint - previousIntersection;
+    glm::vec3 reflectionVec = viewRay + (2 * intersectionNorm * -(glm::dot(intersectionNorm, viewRay)));
+    //glm::vec3 reflectionVec =  ((2 * glm::dot(toPrevious, intersectionNorm)) * intersectionNorm) - (toPrevious)  ;
+    glm::vec3 reflectionOrigin = intersectionPoint + (intersectionNorm * 1e-4);
 
+
+    Intersectable* objectPtr = nullptr;
+    glm::vec3 intNormal;
+    float intDistance;
+    Pixel intPix;
+
+    if (mat.mReflection != 0.0 && ShootRay(BuildRay(reflectionOrigin, reflectionVec), sceneObjects, objectPtr, intNormal, intDistance, intPix)) {
+
+        glm::vec3 intPoint = reflectionOrigin + reflectionVec * intDistance;
+        //ref = HallReflection(objectPtr->getMaterial(), intPoint, intNormal, reflectionOrigin, camera, lights, globalAmbient, amb, 0);
+        HallShading(ref, objectPtr->getMaterial(), intPoint, intNormal, reflectionOrigin, recursionDepth + 1, amb + spec + dif);
+    }
+    ref = ref * mat.mReflection * mat.mSpecularColor;
+
+    // sum it all up
+    pixel = dif + spec + amb + ref;
 }
 
 void RayTracer::PhongShading(glm::vec3& pixel, const Material& mat, const glm::vec3& intersectionPoint, const glm::vec3& intersectNorm, const Camera& camera, const Pixel& pix, const  std::vector<LightDesc>& lights, const float& globalAmbient) {
@@ -581,7 +529,7 @@ bool RayTracer::ShootAndShadePrimaryRay(Ray ray, std::vector<Intersectable*> sce
         glm::vec3 intersectionPoint = ray.mOrigin + ray.mNormRayVector * dist;
 
         //PhongShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, pix, settings.lights, settings.mSceneAmbient);
-        HallShading(outColor, obj->getMaterial(), intersectionPoint, normal, settings.camera, settings.lights, settings.mSceneAmbient);
+        HallShading(outColor, obj->getMaterial(),intersectionPoint, normal, settings.camera.mPosition, 0);
     }
     return didIntersect;
 }

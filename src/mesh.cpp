@@ -259,7 +259,7 @@ bool Mesh::IntersectCollectionOfFaces(const Ray& ray, float& distance, glm::vec3
             foundIntersection = true;
             dis = t;
             distance = t;
-            normAtIntersection = (norm0 * alpha) + (norm1 * beta) + (norm2 * gamma);
+            normAtIntersection = glm::normalize((norm0 * alpha) + (norm1 * beta) + (norm2 * gamma));
         }
     }
 

@@ -18,7 +18,7 @@
             {
                 "color": [ 190, 190, 190 ],
                 "intensity": 1,
-                "position": [ 1, 0, -20 ]
+                "position": [ 0, 0, -20 ]
             },
             {
                 "color": [ 190, 190, 190 ],
@@ -37,10 +37,10 @@
                 "position": [ 0, -4, 0 ],
                 "rotation": [ 0, 0, 0 ],
                 "scale": [ 15.0, 0.5, 15.0 ],
-                "colorDif": [ 161, 161, 161 ],
-                "colorSpec": [ 42, 161, 152 ],
-                "diffuse": 0.9,
-                "specular": 0.1,
+                "colorDif": [42, 161, 152 ],
+                "colorSpec": [ 42, 161, 152],
+                "diffuse": 0.6,
+                "specular": 0.4,
                 "ambient": 0.1,
                 "reflection": 0,
                 "shinyness": 200
@@ -51,8 +51,8 @@
                 "BVHmaxDepth": 25,
                 "BVHtriThreshold": 5,
                 "filename": "assets/dragon.smf",
-                "position": [ 0, -2.20, 2.5 ],
-                "rotation": [ 30, 45, 0 ],
+                "position": [ -3, -2.20, 2.5 ],
+                "rotation": [ 30, 45, 10 ],
                 "scale": [ 3, 3, 3 ],
                 "colorDif": [ 196, 202, 206 ],
                 "colorSpec": [ 196, 202, 206 ],
@@ -76,16 +76,16 @@
                 "shinyness": 200
             },
             {
-                "_comment": "  reflected sphere",
+                "_comment": "reflected sphere",
                 "type": "Sphere",
                 "radius": 15,
-                "position": [ 10, -5, 40],
-                "colorDif": [ 200, 200, 200 ],
-                "colorSpec": [ 200, 200, 200 ],
+                "position": [ 10, -15, 40],
+                "colorDif": [ 200, 80, 30  ],
+                "colorSpec": [ 200, 80, 30  ],
                 "diffuse": 0.1,
-                "specular": 0.9,
+                "specular": 0.6,
                 "ambient": 0.01,
-                "reflection": 0,
+                "reflection": 1,
                 "shinyness": 200
             },
             {
@@ -94,14 +94,14 @@
                 "BVHmaxDepth": 25,
                 "BVHtriThreshold": 5,
                 "filename": "assets/teapot.smf",
-                "position": [0, 5, 13],
+                "position": [0, -10, 40],
                 "rotation": [ 0, 0, 0 ],
                 "scale": [ 3, 3, 3 ],
                 "colorDif": [ 200, 80, 30 ],
                 "colorSpec": [  200, 80, 30 ],
-                "diffuse": 0.2,
-                "specular": 0.8,
-                "ambient": 0.01,
+                "diffuse": 0.4,
+                "specular": 0.6,
+                "ambient": 0.1,
                 "reflection": 0,
                 "shinyness": 200
             },
