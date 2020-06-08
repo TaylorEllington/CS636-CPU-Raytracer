@@ -61,6 +61,9 @@ for (LightDesc light : settings.lights) {
 }
 {% endhighlight %}
 
+
+
+
 Then further down, on line 217 we account for light passing through an object via transmission. Then calculate the next level of hall shading based on where that ray lands. Finally we add the transmissive component to the total value for the pixel.
 
 {% highlight c++ %}

@@ -6,6 +6,9 @@ categories: refraction
 visible: 1
 ---
 
+Following some feedback on assignment 6 I looked back at the reflection code, adjusted a few things, normalized a few more vectors I had over looked and was able to finally get the reflection working as it should.
+
+The below images are the same scenes as before, now showcasing the correct reflection properties, including multi-object reflection. 
 
 ## Images
 
