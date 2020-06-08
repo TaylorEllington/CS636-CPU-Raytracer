@@ -7,7 +7,7 @@
     "camera": {
         "hViewAngle": 56,
         "lookAtPoint": [ 0, 0, 0 ],
-        "position": [ 0, 0, 40 ],
+        "position": [ 0, 0, 25 ],
         "up": [ 0, 1, 0 ],
         "viewPlaneDist": 1
     },
@@ -17,14 +17,24 @@
         "lights": [
    
             {
-                "color": [ 190, 190, 190 ],
+                "color": [ 80,80,80 ],
                 "intensity": 1,
-                "position": [ 0, 10, 0]
+                "position": [ 0, 15, 0]
             },
             {
-                "color": [ 190, 190, 190 ],
+                "color": [ 80,80,80],
                 "intensity": 1,
-                "position": [ -5, 5, 5]
+                "position": [ 0, 3, 25 ]
+            },
+            {
+                "color": [80,80,80],
+                "intensity": 1,
+                "position": [ -5, 3, 25 ]
+            },
+            {
+                "color": [ 80,80,80 ],
+                "intensity": 1,
+                "position": [ 5, 3, 25 ]
             }
         ],
 
@@ -53,7 +63,7 @@
                 "BVHmaxDepth": 25,
                 "BVHtriThreshold": 5,
                 "filename": "assets/cube.smf",
-                "position": [ 0, 20, 0 ],
+                "position": [ 0, 30, 0 ],
                 "rotation": [ 0, 0, 0 ],
                 "scale": [ 60.0, 0.5, 60.0 ],
                 "colorDif": [ 42, 161, 152 ],
@@ -89,19 +99,19 @@
                 "BVHmaxDepth": 25,
                 "BVHtriThreshold": 5,
                 "filename": "assets/teapot.smf",
-                "position": [0, 2, 0 ],
+                "position": [0, 0, 8 ],
                 "rotation": [ 0, 0, 0 ],
                 "scale": [ 1.75, 1.75, 1.75 ],
                 "colorDif": [ 42, 161, 152 ],
                 "colorSpec": [ 42, 161, 152 ],
                 "colorRef": [ 42, 161, 152 ],
-                "diffuse": 0.0,
-                "specular": 0.0,
-                "ambient": 0.1,
+                "diffuse": 0.08,
+                "specular": 0.12,
+                "ambient": 0.001,
                 "reflection": 0,
                 "shinyness": 30,
-                "transmission": 1,
-                "refractionIndex": 1.03
+                "transmission": 0.8,
+                "refractionIndex": 1.02
             },
             {
                 "_comment": "dragon",
@@ -110,8 +120,27 @@
                 "BVHtriThreshold": 5,
                 "filename": "assets/dragon.smf",
                 "position": [0, -3.5, -8 ],
-                "rotation": [ 0, 0, 0 ],
+                "rotation": [ 0, 75, 0 ],
                 "scale": [ 15, 15, 15 ],
+                "colorDif": [ 220,50,47 ],
+                "colorSpec": [ 220,50,47 ],
+                "colorRef": [ 220,50,47 ],
+                "diffuse": 0.8,
+                "specular": 0.2,
+                "ambient": 0.1,
+                "reflection": 0,
+                "shinyness": 30,
+                "transmission": 0
+            },
+             {
+                "_comment": "blobby thing",
+                "type": "Mesh",
+                "BVHmaxDepth": 25,
+                "BVHtriThreshold": 5,
+                "filename": "assets/penny3.smf",
+                "position": [-10, 4, -8 ],
+                "rotation": [ 0, 75, 0 ],
+                "scale": [ 0.75, 0.75, 0.75 ],
                 "colorDif": [ 108, 113, 196 ],
                 "colorSpec": [ 108, 113, 196 ],
                 "colorRef": [ 108, 113, 196 ],
@@ -121,11 +150,11 @@
                 "reflection": 0,
                 "shinyness": 30,
                 "transmission": 0
-            },                                            
+            },                                                                
             {
                 "_comment": "smol  sphere",
                 "type": "Sphere",
-                "position": [ 0, -2, 0 ],
+                "position": [ 0, -2, 5 ],
                 "radius": 1.5,
                 "colorDif": [ 200, 80, 30 ],
                 "colorSpec": [ 200, 80, 30 ],
@@ -136,8 +165,24 @@
                 "reflection": 0,
                 "shinyness": 200,
                 "transmission": 1,
-                "refractionIndex": 1.03
+                "refractionIndex": 1
+            },
+             {
+                "_comment": "big orange sphere",
+                "type": "Sphere",
+                "position": [5, 4, -8  ],
+                "radius": 3.5,
+                "colorDif": [ 200, 80, 30 ],
+                "colorSpec": [ 200, 80, 30 ],
+                "colorRef": [ 42, 161, 152 ],
+                "diffuse": 0.2,
+                "specular": 0.2,
+                "ambient": 0.01,
+                "reflection": 6,
+                "shinyness": 200,
+                "transmission": 0
             }
+
         ]
     }
 }
