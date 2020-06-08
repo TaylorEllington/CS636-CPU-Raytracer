@@ -45,7 +45,8 @@ for (LightDesc light : settings.lights) {
     float transmissionVal = 1;
     float distToLight = glm::distance(light.position, shadowCheckPoint);
 
-    if (ShootRay(BuildRay(shadowCheckPoint, light.position), objectPtr, intNormal, intDistance, intPix) && intDistance < distToLight) {
+    if (ShootRay(BuildRay(shadowCheckPoint, light.position), objectPtr, intNormal, intDistance, intPix) 
+                                                                            && intDistance < distToLight) {
         transmissionVal = objectPtr->getMaterial().mTransmission;
 
         // if the object isnt transmissive, skip this light. using this val to account for epsilons 
@@ -57,8 +58,8 @@ for (LightDesc light : settings.lights) {
     //apply shading, as subject to any objects in the way of the light source
     dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint)
              * transmissionVal;
-    spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, settings.camera)
-             * transmissionVal;
+    spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, 
+        intersectionPoint, settings.camera) * transmissionVal;
 }
 {% endhighlight %}
 
