@@ -6,10 +6,9 @@ categories: refraction
 visible: 1
 ---
 
-Page Currently WIP, please do not consider this a final submission
 
 
-# Adding Transmission and Refraction Rays
+## Adding Transmission and Refraction Rays
 
 The first step was to add the necessary components to the material object so that we could model the new properties. We needed to add the Transmission constant, as well as the refraction Index per material. We also added a text field that picks up a comment from the json scene files to aid in debugging. The final version of  the `Material` class is:
 
@@ -56,8 +55,10 @@ for (LightDesc light : settings.lights) {
     }
 
     //apply shading, as subject to any objects in the way of the light source
-    dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint) * transmissionVal;
-    spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, settings.camera) * transmissionVal;
+    dif += HallDiffuse(mat.mDiffuse, mat.mDiffuseColor, light, intersectionNorm, intersectionPoint)
+             * transmissionVal;
+    spec += HallSpecular(mat.mSpecular, mat.mShinyness, mat.mSpecularColor, light, intersectionNorm, intersectionPoint, settings.camera)
+             * transmissionVal;
 }
 {% endhighlight %}
 
@@ -71,23 +72,26 @@ Then further down, on line 217 we account for light passing through an object vi
     glm::vec3 tra = { 0.0, 0.0, 0.0 };
 
     Ray exitRay;
-    if (mat.mTransmission > 0 && ComputeInternalReflections(object, intersectionPoint, viewRay, intersectionNorm, exitRay)) {
+    if (mat.mTransmission > 0 && ComputeInternalReflections(object, intersectionPoint, 
+                                                viewRay, intersectionNorm, exitRay)) {
         //hall shading
         Intersectable* objPtr;  glm::vec3 intNorm;
         float dist;  Pixel px;
 
         if (ShootRay(exitRay, objPtr, intNorm, dist, px)) {
             glm::vec3 transmissionPoint = exitRay.mOrigin + exitRay.mNormRayVector * dist;
-            HallShading(tra, objPtr, objPtr->getMaterial(), transmissionPoint, intNorm, exitRay.mOrigin, recursionDepth + 1, amb + spec + dif);
+            HallShading(tra, objPtr, objPtr->getMaterial(), transmissionPoint, intNorm,
+                     exitRay.mOrigin, recursionDepth + 1, amb + spec + dif);
         }
     }
     tra = tra * mat.mTransmission * mat.mTransmissionColor;
 
 // sum it all up
 pixel = dif + spec + amb + ref + tra;
+{% endhighlight %}
 
 Much of the work goes on inside `ComputeInternalReflections`. Admittedly this function is a mess. There was an attempt at a recursive version of this discussed below, however issues occurred. Instead we built this to handle one level of internal reflection if necessary, and that seems to have worked or our scenes.  
-{% endhighlight %}
+
 
 {% highlight c++ %}
 bool ComputeInternalReflections(Intersectable* object, glm::vec3 intersectionPoint, 
@@ -160,6 +164,7 @@ bool ComputeInternalReflections(Intersectable* object, glm::vec3 intersectionPoi
 
 
 There are two other utility functions written. `clamp` and `refract`. both are called by the above code
+
 {% highlight c++ %}
 float clamp(float min, float max, float val) {
     return std::min(max, std::max(min, val));
@@ -193,15 +198,18 @@ glm::vec3 refract(const glm::vec3& I, const glm::vec3& N, const float& eta)
 
 The structure and naming of variables in `refract` were inspired by the scratchapixel tutorials on this topic, which I turned to as a resource when I ran into difficulties with the vector math. 
 
-# Images
+## Images
+First we demonstrate a sphere 
 ![Simple Transmission Scene](/cs636-advanced-rendering-techniques/images/HW_7/basic-refraction.png)
 
+Then a scene where two spheres are visible through a box mesh. You can note a slight distortion of the spheres due to the refractive index of the box being different from the "vacuum" of the rest of the scene. 
 ![Mesh Transmission Scene](/cs636-advanced-rendering-techniques/images/HW_7/medium-refraction.png)
 
+finally a more complicated scene where we show that multiple objects are visible through a single transmissible object, even one with reflection. Things to note, the shadows of the teapot and sphere are less prevalent due to the new transmissive shadow handling. The body of the dragon distorts around the edge of the teapot due to the different refractive index and exaggerated geometry. Finally you can see reflections on the orange sphere even through the teapot. 
 ![Complex Transmission Scene](/cs636-advanced-rendering-techniques/images/HW_7/complex-refraction.png)
 
 
-#Work in progress issues
+## Work in progress issues
 
 Besides the obvious issues with the spheres, I encountered significant difficulty in dealing with Total Internal Reflection. Initially I tried to create a recursive method to model the bounces of light inside a object, eventually solving for the out ray, unfortunately this approach never fully came together, and I have preserved the implementation here:
 
