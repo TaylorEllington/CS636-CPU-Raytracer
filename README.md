@@ -2,6 +2,8 @@
 
 Artifacts from CS636 Advanced Rendering Techniques taken Spring 2020 at Drexel University on-line for Graduate Degree credit
 
+A series of development blogs can be found here: https://taylorellington.gitlab.io/cs636-advanced-rendering-techniques/
+
 # Repository Contents:
 
 **3rd-party/** contains external libraries used by the c++ homework code  
@@ -30,18 +32,3 @@ Then set up an out of source build with CMake (you need to install CMake)
 That should get you going by generating a project targeted towards whatever is the default build system in your environment. (makefiles, xcode, Visual Studio Solution etc). If you end up with the wrong thing, refer to the CMake docs to get the right generator set up. Once thats done, you should be able to get the raytracer open in your IDE of choice and run it from there. 
 
 
-# Features
-
-This list will expand with time as we add more to the project, these are correlated by the assignment that needed them. 
-
-## Homework 1
-Camera -> image plane  
-Generating rays with image plane  
-Loading smf files  
-Generating primitives  
-Creating a scene  
-Writing to image  
-Ray/triangle intersection  
-Ray/sphere intersection  
-Basic architecture   
-Constant coloring  
